@@ -2,7 +2,7 @@
   "MeshCube|2021-10-07T13:13:11.046Z|84198": {
     "ƒ.MeshCube": {
       "idResource": "MeshCube|2021-10-07T13:13:11.046Z|84198",
-      "name": "MeshCube",
+      "name": "TestCube",
       "type": "MeshCube"
     }
   },
@@ -16,6 +16,15 @@
           "color": "[0.9803921568627451, 0, 0, 0.68]"
         }
       }
+    }
+  },
+  "Graph|2021-10-07T13:40:50.326Z|16040": {
+    "ƒ.Graph": {
+      "name": "Scene",
+      "components": {},
+      "children": [],
+      "idResource": "Graph|2021-10-07T13:40:50.326Z|16040",
+      "type": "Graph"
     }
   }
 }
