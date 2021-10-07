@@ -1,0 +1,21 @@
+{
+  "MeshCube|2021-10-07T13:13:11.046Z|84198": {
+    "ƒ.MeshCube": {
+      "idResource": "MeshCube|2021-10-07T13:13:11.046Z|84198",
+      "name": "MeshCube",
+      "type": "MeshCube"
+    }
+  },
+  "Material|2021-10-07T13:15:55.195Z|83467": {
+    "ƒ.Material": {
+      "name": "RedMaterial",
+      "idResource": "Material|2021-10-07T13:15:55.195Z|83467",
+      "shader": "ShaderUniColor",
+      "coat": {
+        "ƒ.CoatColored": {
+          "color": "[0.9803921568627451, 0, 0, 0.68]"
+        }
+      }
+    }
+  }
+}
