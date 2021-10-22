@@ -37,67 +37,59 @@ var Script;
     var ƒ = FudgeCore;
     ƒ.Debug.info("Main Program Template running!");
     let viewport;
-    let transform;
-    let laser;
+    //let lasertransforms: ƒ.Matrix4x4[];
     let agent;
     let graph;
-    let agentMoveSpeed = 0;
+    let lasers;
+    let laserformations;
+    //let beams: ƒ.Node[];
+    let ctrlForward = new ƒ.Control("Forward", 1, 0 /* PROPORTIONAL */);
+    ctrlForward.setDelay(200);
+    let ctrlRotation = new ƒ.Control("Rotation", 1, 0 /* PROPORTIONAL */);
+    ctrlRotation.setDelay(200);
+    let agentMoveSpeedFactor = 10;
     let deltaTime;
-    let agentMoveDirection = 0;
+    //let agentMoveDirection: number = 0;
     document.addEventListener("interactiveViewportStarted", start);
     function start(_event) {
         viewport = _event.detail;
         graph = viewport.getBranch();
-        laser = graph.getChildrenByName("Lasers")[0].getChildrenByName("Laserformation_1")[0].getChildrenByName("Laser")[0];
-        transform = laser.getComponent(ƒ.ComponentTransform).mtxLocal;
-        console.log("laser: " + laser);
+        laserformations = graph.getChildrenByName("Lasers")[0].getChildrenByName("Laserformation");
+        lasers = laserformations[0].getChildrenByName("Laser");
         agent = graph.getChildrenByName("Agents")[0].getChildrenByName("Agent_1")[0];
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
+        checkCollision();
     }
     function update(_event) {
         // ƒ.Physics.world.simulate();  // if physics is included and used
         viewport.draw();
-        deltaTime = ƒ.Loop.timeFrameReal / 1000; //equivalent to unity deltaTime
-        transform.rotateZ(90 * deltaTime);
+        deltaTime = ƒ.Loop.timeFrameReal / 1000;
+        laserformations.forEach(element => {
+            lasers = element.getChildren();
+            lasers.forEach(element => {
+                element.mtxLocal.rotateZ(90 * deltaTime);
+            });
+        }); //equivalent to unity deltaTime
         ƒ.AudioManager.default.update();
-        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP])) {
-            agentMoveDirection = 1;
-            agent.mtxLocal.translateY(agentMoveDirection * agentMoveSpeed * deltaTime);
-            accelerateAgent(10, 10);
-        }
-        else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN])) {
-            agentMoveDirection = -1;
-            agent.mtxLocal.translateY(agentMoveDirection * agentMoveSpeed * deltaTime);
-            accelerateAgent(10, 10);
-        }
-        else {
-            decelerateAgent(20);
-            agent.mtxLocal.translateY(agentMoveDirection * agentMoveSpeed * deltaTime);
-        }
-        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT])) {
-            agent.mtxLocal.rotateZ(-250 * deltaTime);
-        }
-        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT])) {
-            agent.mtxLocal.rotateZ(250 * deltaTime);
-        }
+        //movementcontrol
+        let inputmovementvalue = (ƒ.Keyboard.mapToValue(-1, 0, [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]))
+            + (ƒ.Keyboard.mapToValue(1, 0, [ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP]));
+        ctrlForward.setInput(inputmovementvalue);
+        agent.mtxLocal.translateY(ctrlForward.getOutput() * deltaTime * agentMoveSpeedFactor);
+        let inputrotationvalue = (ƒ.Keyboard.mapToValue(-1, 0, [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]))
+            + (ƒ.Keyboard.mapToValue(1, 0, [ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT]));
+        ctrlRotation.setInput(inputrotationvalue);
+        agent.mtxLocal.rotateZ(ctrlRotation.getOutput() * deltaTime * 360);
     }
-    function accelerateAgent(_accelerationSpeed, _speedLimit) {
-        if (agentMoveSpeed < _speedLimit) {
-            agentMoveSpeed += _accelerationSpeed * deltaTime;
-        }
-        else {
-            agentMoveSpeed = _speedLimit;
-        }
-    }
-    function decelerateAgent(_decelerationSpeed) {
-        if (agentMoveSpeed > 0) {
-            agentMoveSpeed -= _decelerationSpeed * deltaTime;
-        }
-        else {
-            agentMoveDirection = 0;
-            agentMoveSpeed = 0;
-        }
+    function checkCollision() {
+        lasers.forEach(element => {
+            let beams = element.getChildren();
+            beams.forEach(element => {
+                let posLocal = ƒ.Vector3.TRANSFORMATION(agent.mtxWorld.translation, element.mtxWorldInverse, true);
+                console.log(posLocal);
+            });
+        });
     }
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map
