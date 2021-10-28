@@ -6,11 +6,8 @@ namespace Script {
   //let lasertransforms: ƒ.Matrix4x4[];
   
   let agent: ƒ.Node;
-  let agentoriginalpos: ƒ.Mutator;
-  let graph: ƒ.Node;
+  let copyLaser: ƒ.GraphInstance;
 
-  let lasers: ƒ.Node[];
-  let laserformations: ƒ.Node[];
   //let beams: ƒ.Node[];
 
   let ctrlForward: ƒ.Control = new ƒ.Control("Forward", 1, ƒ.CONTROL_TYPE.PROPORTIONAL);
@@ -20,15 +17,30 @@ namespace Script {
   let agentMoveSpeedFactor: number = 10;
   let deltaTime: number;
   //let agentMoveDirection: number = 0;
-  document.addEventListener("interactiveViewportStarted", <EventListener>start);
+  document.addEventListener("interactiveViewportStarted",  <EventListener><unknown>start);
 
-  function start(_event: CustomEvent): void {
+  async function start(_event: CustomEvent): Promise<void> {
     viewport = _event.detail;
-    graph = viewport.getBranch();
-    laserformations = graph.getChildrenByName("Lasers")[0].getChildrenByName("Laserformation");
-    lasers = laserformations[0].getChildrenByName("Laser");
+    let graph: ƒ.Node = viewport.getBranch();
+
+    let graphLaser: ƒ.Graph = <ƒ.Graph>FudgeCore.Project.resources["Graph|2021-10-28T13:07:50.424Z|67622"];
+
     agent = graph.getChildrenByName("Agents")[0].getChildrenByName("Agent_1")[0];
-    agentoriginalpos = agent.getComponent(ƒ.ComponentTransform);
+    
+    console.log("Copy", copyLaser);
+    for (let i: number = 0; i < 3; i++) {
+      for (let j: number = 0; j < 2; j++) {
+        copyLaser = await ƒ.Project.createGraphInstance(graphLaser);
+        graph.getChildrenByName("Lasers")[0].addChild(copyLaser);
+        copyLaser.mtxLocal.translateX(-13.5 + i * 7.5);
+        copyLaser.mtxLocal.translateY(-7.5 + j * 7.5);
+        if (j>=1) {
+          copyLaser.getComponent(LaserRotator).rotationSpeed *= -1;
+        }
+      }
+    }
+    
+
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
 
@@ -39,12 +51,6 @@ namespace Script {
     // ƒ.Physics.world.simulate();  // if physics is included and used
     viewport.draw();
     deltaTime = ƒ.Loop.timeFrameReal / 1000; //equivalent to unity deltaTime
-    laserformations.forEach(element => {
-      lasers = element.getChildren();
-      //lasers.forEach(element => {
-        //element.mtxLocal.rotateZ(90 * deltaTime);
-      //});
-    });
     ƒ.AudioManager.default.update();
 
     //movementcontrol
@@ -60,27 +66,8 @@ namespace Script {
     ctrlRotation.setInput(inputrotationvalue);
     agent.mtxLocal.rotateZ(ctrlRotation.getOutput() * deltaTime * 360);
     
-    lasers.forEach(laser => {
-      //laser.getComponent(ƒ.ComponentTransform).mtxLocal.rotateZ(90 * deltaTime);
-      let laserBeams: ƒ.Node[] = laser.getChildrenByName("Beam");
-      laserBeams.forEach(beam => {
-        checkCollision(agent , beam);
-      });
-    });
 
     
   }
-
-  
-  function checkCollision (collider: ƒ.Node, obstacle: ƒ.Node) {
-      let distance: ƒ.Vector3 = ƒ.Vector3.TRANSFORMATION(collider.mtxWorld.translation, obstacle.mtxWorldInverse, true);   
-      let minX = obstacle.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.x / 2 + collider.radius;
-      let minY = obstacle.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.y + collider.radius;
-      if (distance.x <= (minX) && distance.x >= -(minX) && distance.y <= minY && distance.y >= 0) {
-        //do something
-        console.log("intersecting");
-        agent.getComponent(ƒ.ComponentTransform).mutate(agentoriginalpos);
-      }
-    }
     
-  }
+}

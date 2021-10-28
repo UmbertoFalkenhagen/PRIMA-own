@@ -29,6 +29,16 @@ var Script;
                     break;
             }
         };
+        checkCollision(collider, obstacle) {
+            let distance = ƒ.Vector3.TRANSFORMATION(collider.mtxWorld.translation, obstacle.mtxWorldInverse, true);
+            let minX = obstacle.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.x / 2 + collider.radius;
+            let minY = obstacle.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.y + collider.radius;
+            if (distance.x <= (minX) && distance.x >= -(minX) && distance.y <= minY && distance.y >= 0) {
+                //do something
+                console.log("intersecting");
+                //agent.getComponent(ƒ.ComponentTransform).mutate(agentoriginalpos);
+            }
+        }
     }
     Script.CollisionDetector = CollisionDetector;
 })(Script || (Script = {}));
@@ -118,10 +128,7 @@ var Script;
     let viewport;
     //let lasertransforms: ƒ.Matrix4x4[];
     let agent;
-    let agentoriginalpos;
-    let graph;
-    let lasers;
-    let laserformations;
+    let copyLaser;
     //let beams: ƒ.Node[];
     let ctrlForward = new ƒ.Control("Forward", 1, 0 /* PROPORTIONAL */);
     ctrlForward.setDelay(200);
@@ -131,13 +138,23 @@ var Script;
     let deltaTime;
     //let agentMoveDirection: number = 0;
     document.addEventListener("interactiveViewportStarted", start);
-    function start(_event) {
+    async function start(_event) {
         viewport = _event.detail;
-        graph = viewport.getBranch();
-        laserformations = graph.getChildrenByName("Lasers")[0].getChildrenByName("Laserformation");
-        lasers = laserformations[0].getChildrenByName("Laser");
+        let graph = viewport.getBranch();
+        let graphLaser = FudgeCore.Project.resources["Graph|2021-10-28T13:07:50.424Z|67622"];
         agent = graph.getChildrenByName("Agents")[0].getChildrenByName("Agent_1")[0];
-        agentoriginalpos = agent.getComponent(ƒ.ComponentTransform);
+        console.log("Copy", copyLaser);
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 2; j++) {
+                copyLaser = await ƒ.Project.createGraphInstance(graphLaser);
+                graph.getChildrenByName("Lasers")[0].addChild(copyLaser);
+                copyLaser.mtxLocal.translateX(-13.5 + i * 7.5);
+                copyLaser.mtxLocal.translateY(-7.5 + j * 7.5);
+                if (j >= 1) {
+                    copyLaser.getComponent(Script.LaserRotator).rotationSpeed *= -1;
+                }
+            }
+        }
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
@@ -145,12 +162,6 @@ var Script;
         // ƒ.Physics.world.simulate();  // if physics is included and used
         viewport.draw();
         deltaTime = ƒ.Loop.timeFrameReal / 1000; //equivalent to unity deltaTime
-        laserformations.forEach(element => {
-            lasers = element.getChildren();
-            //lasers.forEach(element => {
-            //element.mtxLocal.rotateZ(90 * deltaTime);
-            //});
-        });
         ƒ.AudioManager.default.update();
         //movementcontrol
         let inputmovementvalue = (ƒ.Keyboard.mapToValue(-1, 0, [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]))
@@ -161,23 +172,6 @@ var Script;
             + (ƒ.Keyboard.mapToValue(1, 0, [ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT]));
         ctrlRotation.setInput(inputrotationvalue);
         agent.mtxLocal.rotateZ(ctrlRotation.getOutput() * deltaTime * 360);
-        lasers.forEach(laser => {
-            //laser.getComponent(ƒ.ComponentTransform).mtxLocal.rotateZ(90 * deltaTime);
-            let laserBeams = laser.getChildrenByName("Beam");
-            laserBeams.forEach(beam => {
-                checkCollision(agent, beam);
-            });
-        });
-    }
-    function checkCollision(collider, obstacle) {
-        let distance = ƒ.Vector3.TRANSFORMATION(collider.mtxWorld.translation, obstacle.mtxWorldInverse, true);
-        let minX = obstacle.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.x / 2 + collider.radius;
-        let minY = obstacle.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.y + collider.radius;
-        if (distance.x <= (minX) && distance.x >= -(minX) && distance.y <= minY && distance.y >= 0) {
-            //do something
-            console.log("intersecting");
-            agent.getComponent(ƒ.ComponentTransform).mutate(agentoriginalpos);
-        }
     }
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map

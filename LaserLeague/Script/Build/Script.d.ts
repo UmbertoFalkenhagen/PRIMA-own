@@ -5,6 +5,7 @@ declare namespace Script {
         message: string;
         constructor();
         hndEvent: (_event: Event) => void;
+        checkCollision(collider: ƒ.Node, obstacle: ƒ.Node): void;
     }
 }
 declare namespace Script {

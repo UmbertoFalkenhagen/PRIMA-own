@@ -34,6 +34,17 @@ namespace Script {
       }
     }
 
+    public checkCollision (collider: ƒ.Node, obstacle: ƒ.Node) {
+      let distance: ƒ.Vector3 = ƒ.Vector3.TRANSFORMATION(collider.mtxWorld.translation, obstacle.mtxWorldInverse, true);   
+      let minX = obstacle.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.x / 2 + collider.radius;
+      let minY = obstacle.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.y + collider.radius;
+      if (distance.x <= (minX) && distance.x >= -(minX) && distance.y <= minY && distance.y >= 0) {
+        //do something
+        console.log("intersecting");
+        //agent.getComponent(ƒ.ComponentTransform).mutate(agentoriginalpos);
+      }
+    }
+
     // protected reduceMutator(_mutator: ƒ.Mutator): void {
     //   // delete properties that should not be mutated
     //   // undefined properties and private fields (#) will not be included by default
