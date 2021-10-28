@@ -16,8 +16,6 @@ namespace Script {
     public gameObject: ƒ.Node;
     public rotationTransform: ƒ.ComponentTransform;
 
-
-
     constructor() {
       super();
 
@@ -28,8 +26,6 @@ namespace Script {
       // Listen to this component being added to or removed from a node
       this.addEventListener(ƒ.EVENT.COMPONENT_ADD, this.hndEvent);
       this.addEventListener(ƒ.EVENT.COMPONENT_REMOVE, this.hndEvent);
-      
-      document.addEventListener("helloworld", <EventListener>this.start);
 
     }
 
@@ -38,30 +34,23 @@ namespace Script {
       switch (_event.type) {
         case ƒ.EVENT.COMPONENT_ADD:
           ƒ.Debug.log(this.message, this.node);
-          //ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
-          //console.log("listening to loop update");
+          this.start();
           break;
         case ƒ.EVENT.COMPONENT_REMOVE:
           this.removeEventListener(ƒ.EVENT.COMPONENT_ADD, this.hndEvent);
           this.removeEventListener(ƒ.EVENT.COMPONENT_REMOVE, this.hndEvent);
-          //ƒ.Loop.removeEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
           break;
       }
     }
 
-    public start(_event: CustomEvent): void {
-      this.viewport = _event.detail;
-      console.log(this.node);
-      this.gameObject = this.node;
-      this.rotationTransform = this.gameObject.getComponent(ƒ.ComponentTransform);
+    public start (): void  {
+
       ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
-      ƒ.Loop.start();
     }
 
-    public update(_event: Event): void {
-      this.viewport.draw();
+    public update = (_event: Event): void =>{
       this.deltaTime = ƒ.Loop.timeFrameReal / 1000;
-      this.rotationTransform.mtxLocal.rotateZ(this.rotationSpeed * this.deltaTime);
+      this.node.mtxLocal.rotateZ(this.rotationSpeed * this.deltaTime);
     }
 
     // protected reduceMutator(_mutator: ƒ.Mutator): void {

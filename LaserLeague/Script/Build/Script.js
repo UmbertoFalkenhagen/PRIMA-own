@@ -87,36 +87,27 @@ var Script;
             // Listen to this component being added to or removed from a node
             this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
             this.addEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
-            document.addEventListener("helloworld", this.start);
         }
         // Activate the functions of this component as response to events
         hndEvent = (_event) => {
             switch (_event.type) {
                 case "componentAdd" /* COMPONENT_ADD */:
                     ƒ.Debug.log(this.message, this.node);
-                    //ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
-                    //console.log("listening to loop update");
+                    this.start();
                     break;
                 case "componentRemove" /* COMPONENT_REMOVE */:
                     this.removeEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
                     this.removeEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
-                    //ƒ.Loop.removeEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
                     break;
             }
         };
-        start(_event) {
-            this.viewport = _event.detail;
-            console.log(this.node);
-            this.gameObject = this.node;
-            this.rotationTransform = this.gameObject.getComponent(ƒ.ComponentTransform);
+        start() {
             ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, this.update);
-            ƒ.Loop.start();
         }
-        update(_event) {
-            this.viewport.draw();
+        update = (_event) => {
             this.deltaTime = ƒ.Loop.timeFrameReal / 1000;
-            this.rotationTransform.mtxLocal.rotateZ(this.rotationSpeed * this.deltaTime);
-        }
+            this.node.mtxLocal.rotateZ(this.rotationSpeed * this.deltaTime);
+        };
     }
     Script.LaserRotator = LaserRotator;
 })(Script || (Script = {}));
@@ -156,9 +147,9 @@ var Script;
         deltaTime = ƒ.Loop.timeFrameReal / 1000; //equivalent to unity deltaTime
         laserformations.forEach(element => {
             lasers = element.getChildren();
-            lasers.forEach(element => {
-                //element.mtxLocal.rotateZ(90 * deltaTime);
-            });
+            //lasers.forEach(element => {
+            //element.mtxLocal.rotateZ(90 * deltaTime);
+            //});
         });
         ƒ.AudioManager.default.update();
         //movementcontrol

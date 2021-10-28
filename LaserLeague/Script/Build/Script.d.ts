@@ -28,8 +28,8 @@ declare namespace Script {
         rotationTransform: ƒ.ComponentTransform;
         constructor();
         hndEvent: (_event: Event) => void;
-        start(_event: CustomEvent): void;
-        update(_event: Event): void;
+        start(): void;
+        update: (_event: Event) => void;
     }
 }
 declare namespace Script {

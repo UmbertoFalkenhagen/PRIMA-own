@@ -41,9 +41,9 @@ namespace Script {
     deltaTime = ƒ.Loop.timeFrameReal / 1000; //equivalent to unity deltaTime
     laserformations.forEach(element => {
       lasers = element.getChildren();
-      lasers.forEach(element => {
+      //lasers.forEach(element => {
         //element.mtxLocal.rotateZ(90 * deltaTime);
-      });
+      //});
     });
     ƒ.AudioManager.default.update();
 
