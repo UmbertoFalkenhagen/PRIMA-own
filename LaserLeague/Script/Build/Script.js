@@ -87,8 +87,6 @@ var Script;
         viewport;
         rotationSpeed = 90;
         deltaTime;
-        gameObject;
-        rotationTransform;
         constructor() {
             super();
             // Don't start when running in editor

@@ -13,9 +13,6 @@ namespace Script {
     public rotationSpeed: number = 90;
     public deltaTime: number;
 
-    public gameObject: ƒ.Node;
-    public rotationTransform: ƒ.ComponentTransform;
-
     constructor() {
       super();
 

@@ -25,8 +25,6 @@ declare namespace Script {
         viewport: ƒ.Viewport;
         rotationSpeed: number;
         deltaTime: number;
-        gameObject: ƒ.Node;
-        rotationTransform: ƒ.ComponentTransform;
         constructor();
         hndEvent: (_event: Event) => void;
         start(): void;
