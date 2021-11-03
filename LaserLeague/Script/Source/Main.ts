@@ -1,4 +1,4 @@
-namespace Script {
+namespace LaserLeague {
   import ƒ = FudgeCore;
   ƒ.Debug.info("Main Program Template running!");
 
@@ -7,6 +7,7 @@ namespace Script {
   
   let agent: ƒ.Node;
   let copyLaser: ƒ.GraphInstance;
+  //let gameManager: GameManager;
 
   //let beams: ƒ.Node[];
 
@@ -23,8 +24,8 @@ namespace Script {
     viewport = _event.detail;
     let graph: ƒ.Node = viewport.getBranch();
 
-    let graphLaser: ƒ.Graph = <ƒ.Graph>FudgeCore.Project.resources["Graph|2021-10-28T13:07:50.424Z|67622"];
-
+    let graphLaser: ƒ.Graph = <ƒ.Graph>FudgeCore.Project.resources["Graph|2021-11-02T13:37:28.823Z|56099"];
+    console.log(FudgeCore.Project.resources);
     agent = graph.getChildrenByName("Agents")[0].getChildrenByName("Agent_1")[0];
     
     console.log("Copy", copyLaser);
@@ -40,10 +41,11 @@ namespace Script {
       }
     }
     
-
+    //gameManager = GameManager.getInstance();
+    //gameManager.start();
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
-
+    
     
   }
 

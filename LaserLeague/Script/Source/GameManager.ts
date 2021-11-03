@@ -2,16 +2,16 @@ namespace LaserLeague {
   import ƒ = FudgeCore;
   ƒ.Project.registerScriptNamespace(LaserLeague);  // Register the namespace to FUDGE for serialization
 
-  export class CollisionDetector extends ƒ.ComponentScript {
+  export class GameManager extends ƒ.ComponentScript {
     // Register the script as component for use in the editor via drag&drop
-    public static readonly iSubclass: number = ƒ.Component.registerSubclass(CollisionDetector);
+    public static readonly iSubclass: number = ƒ.Component.registerSubclass(GameManager);
     // Properties may be mutated by users in the editor via the automatically created user interface
-    public message: string = "CollisionDetector added to ";
+    public message: string = "GameManager added to ";
+    private static instance: GameManager;
 
-    public viewport: ƒ.Viewport;
     public deltaTime: number;
     public agent: ƒ.Node;
-    public sceneGraph: ƒ.Graph;
+    public sceneGraph: ƒ.Node;
 
 
     constructor() {
@@ -26,22 +26,21 @@ namespace LaserLeague {
       this.addEventListener(ƒ.EVENT.COMPONENT_REMOVE, this.hndEvent);
     }
 
-    public static checkCollision = (collider: ƒ.Node, obstacle: ƒ.Node) =>{
-      let distance: ƒ.Vector3 = ƒ.Vector3.TRANSFORMATION(collider.mtxWorld.translation, obstacle.mtxWorldInverse, true);   
-      let minX = obstacle.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.x / 2 + collider.radius;
-      let minY = obstacle.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.y + collider.radius;
-      if (distance.x <= (minX) && distance.x >= -(minX) && distance.y <= minY && distance.y >= 0) {
-        //do something
-        console.log("intersecting");
-        //agent.getComponent(ƒ.ComponentTransform).mutate(agentoriginalpos);
+    public static getInstance(): GameManager {
+      if (!GameManager.instance) {
+          GameManager.instance = new GameManager();
       }
-    }
+
+      return GameManager.instance;
+  }
 
     // Activate the functions of this component as response to events
-    public hndEvent = (_event: Event) => {
+     // Activate the functions of this component as response to events
+     public hndEvent = (_event: Event) => {
       switch (_event.type) {
         case ƒ.EVENT.COMPONENT_ADD:
           ƒ.Debug.log(this.message, this.node);
+          this.sceneGraph = this.node;
           this.start();
           break;
         case ƒ.EVENT.COMPONENT_REMOVE:
@@ -51,18 +50,20 @@ namespace LaserLeague {
       }
     }
 
-    public start (): void  {
-     
+    public start =(): void  =>{
+      console.log("thats what you looking for: " + this.node);
+      //this.sceneGraph = this.node; //<ƒ.Graph>FudgeCore.Project.resources["Graph|2021-10-13T12:42:15.134Z|58505"];
       //this.agent = this.sceneGraph.getChildrenByName("Agents")[0].getChildrenByName("Agent_1")[0];
+      //hier code einfuegen um agent zu generieren
       ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
-      
+      this.deltaTime = ƒ.Loop.timeFrameReal / 1000;
     }
 
     public update = (_event: Event): void =>{
-      this.sceneGraph = <ƒ.Graph>FudgeCore.Project.resources["Graph|2021-10-13T12:42:15.134Z|58505"];
-      this.deltaTime = ƒ.Loop.timeFrameReal / 1000;
-      //CollisionDetector.checkCollision(this.node, this.agent);
+      
+      CollisionDetector.checkCollision(this.node, this.agent);
     }
+
 
     // protected reduceMutator(_mutator: ƒ.Mutator): void {
     //   // delete properties that should not be mutated

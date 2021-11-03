@@ -1,13 +1,27 @@
 "use strict";
-var Script;
-(function (Script) {
+var LaserLeague;
+(function (LaserLeague) {
     var ƒ = FudgeCore;
-    ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
+    class Agent extends ƒ.Node {
+        constructor() {
+            super("Agent");
+        }
+    }
+    LaserLeague.Agent = Agent;
+})(LaserLeague || (LaserLeague = {}));
+var LaserLeague;
+(function (LaserLeague) {
+    var ƒ = FudgeCore;
+    ƒ.Project.registerScriptNamespace(LaserLeague); // Register the namespace to FUDGE for serialization
     class CollisionDetector extends ƒ.ComponentScript {
         // Register the script as component for use in the editor via drag&drop
         static iSubclass = ƒ.Component.registerSubclass(CollisionDetector);
         // Properties may be mutated by users in the editor via the automatically created user interface
         message = "CollisionDetector added to ";
+        viewport;
+        deltaTime;
+        agent;
+        sceneGraph;
         constructor() {
             super();
             // Don't start when running in editor
@@ -17,19 +31,7 @@ var Script;
             this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
             this.addEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
         }
-        // Activate the functions of this component as response to events
-        hndEvent = (_event) => {
-            switch (_event.type) {
-                case "componentAdd" /* COMPONENT_ADD */:
-                    ƒ.Debug.log(this.message, this.node);
-                    break;
-                case "componentRemove" /* COMPONENT_REMOVE */:
-                    this.removeEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
-                    this.removeEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
-                    break;
-            }
-        };
-        checkCollision(collider, obstacle) {
+        static checkCollision = (collider, obstacle) => {
             let distance = ƒ.Vector3.TRANSFORMATION(collider.mtxWorld.translation, obstacle.mtxWorldInverse, true);
             let minX = obstacle.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.x / 2 + collider.radius;
             let minY = obstacle.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.y + collider.radius;
@@ -38,14 +40,36 @@ var Script;
                 console.log("intersecting");
                 //agent.getComponent(ƒ.ComponentTransform).mutate(agentoriginalpos);
             }
+        };
+        // Activate the functions of this component as response to events
+        hndEvent = (_event) => {
+            switch (_event.type) {
+                case "componentAdd" /* COMPONENT_ADD */:
+                    ƒ.Debug.log(this.message, this.node);
+                    this.start();
+                    break;
+                case "componentRemove" /* COMPONENT_REMOVE */:
+                    this.removeEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
+                    this.removeEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
+                    break;
+            }
+        };
+        start() {
+            //this.agent = this.sceneGraph.getChildrenByName("Agents")[0].getChildrenByName("Agent_1")[0];
+            ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, this.update);
         }
+        update = (_event) => {
+            this.sceneGraph = FudgeCore.Project.resources["Graph|2021-10-13T12:42:15.134Z|58505"];
+            this.deltaTime = ƒ.Loop.timeFrameReal / 1000;
+            //CollisionDetector.checkCollision(this.node, this.agent);
+        };
     }
-    Script.CollisionDetector = CollisionDetector;
-})(Script || (Script = {}));
-var Script;
-(function (Script) {
+    LaserLeague.CollisionDetector = CollisionDetector;
+})(LaserLeague || (LaserLeague = {}));
+var LaserLeague;
+(function (LaserLeague) {
     var ƒ = FudgeCore;
-    ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
+    ƒ.Project.registerScriptNamespace(LaserLeague); // Register the namespace to FUDGE for serialization
     class CustomComponentScript extends ƒ.ComponentScript {
         // Register the script as component for use in the editor via drag&drop
         static iSubclass = ƒ.Component.registerSubclass(CustomComponentScript);
@@ -73,12 +97,69 @@ var Script;
             }
         };
     }
-    Script.CustomComponentScript = CustomComponentScript;
-})(Script || (Script = {}));
-var Script;
-(function (Script) {
+    LaserLeague.CustomComponentScript = CustomComponentScript;
+})(LaserLeague || (LaserLeague = {}));
+var LaserLeague;
+(function (LaserLeague) {
     var ƒ = FudgeCore;
-    ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
+    ƒ.Project.registerScriptNamespace(LaserLeague); // Register the namespace to FUDGE for serialization
+    class GameManager extends ƒ.ComponentScript {
+        // Register the script as component for use in the editor via drag&drop
+        static iSubclass = ƒ.Component.registerSubclass(GameManager);
+        // Properties may be mutated by users in the editor via the automatically created user interface
+        message = "GameManager added to ";
+        static instance;
+        deltaTime;
+        agent;
+        sceneGraph;
+        constructor() {
+            super();
+            // Don't start when running in editor
+            if (ƒ.Project.mode == ƒ.MODE.EDITOR)
+                return;
+            // Listen to this component being added to or removed from a node
+            this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
+            this.addEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
+        }
+        static getInstance() {
+            if (!GameManager.instance) {
+                GameManager.instance = new GameManager();
+            }
+            return GameManager.instance;
+        }
+        // Activate the functions of this component as response to events
+        // Activate the functions of this component as response to events
+        hndEvent = (_event) => {
+            switch (_event.type) {
+                case "componentAdd" /* COMPONENT_ADD */:
+                    ƒ.Debug.log(this.message, this.node);
+                    this.sceneGraph = this.node;
+                    this.start();
+                    break;
+                case "componentRemove" /* COMPONENT_REMOVE */:
+                    this.removeEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
+                    this.removeEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
+                    break;
+            }
+        };
+        start = () => {
+            console.log("thats what you looking for: " + this.node);
+            //this.sceneGraph = this.node; //<ƒ.Graph>FudgeCore.Project.resources["Graph|2021-10-13T12:42:15.134Z|58505"];
+            //this.agent = this.sceneGraph.getChildrenByName("Agents")[0].getChildrenByName("Agent_1")[0];
+            //hier code einfuegen um agent zu generieren
+            ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, this.update);
+            this.deltaTime = ƒ.Loop.timeFrameReal / 1000;
+        };
+        update = (_event) => {
+            LaserLeague.CollisionDetector.checkCollision(this.node, this.agent);
+        };
+    }
+    LaserLeague.GameManager = GameManager;
+})(LaserLeague || (LaserLeague = {}));
+var LaserLeague;
+(function (LaserLeague) {
+    var ƒ = FudgeCore;
+    ƒ.Project.registerScriptNamespace(LaserLeague); // Register the namespace to FUDGE for serialization
     class LaserRotator extends ƒ.ComponentScript {
         // Register the script as component for use in the editor via drag&drop
         static iSubclass = ƒ.Component.registerSubclass(LaserRotator);
@@ -117,16 +198,17 @@ var Script;
             this.node.mtxLocal.rotateZ(this.rotationSpeed * this.deltaTime);
         };
     }
-    Script.LaserRotator = LaserRotator;
-})(Script || (Script = {}));
-var Script;
-(function (Script) {
+    LaserLeague.LaserRotator = LaserRotator;
+})(LaserLeague || (LaserLeague = {}));
+var LaserLeague;
+(function (LaserLeague) {
     var ƒ = FudgeCore;
     ƒ.Debug.info("Main Program Template running!");
     let viewport;
     //let lasertransforms: ƒ.Matrix4x4[];
     let agent;
     let copyLaser;
+    //let gameManager: GameManager;
     //let beams: ƒ.Node[];
     let ctrlForward = new ƒ.Control("Forward", 1, 0 /* PROPORTIONAL */);
     ctrlForward.setDelay(200);
@@ -139,7 +221,8 @@ var Script;
     async function start(_event) {
         viewport = _event.detail;
         let graph = viewport.getBranch();
-        let graphLaser = FudgeCore.Project.resources["Graph|2021-10-28T13:07:50.424Z|67622"];
+        let graphLaser = FudgeCore.Project.resources["Graph|2021-11-02T13:37:28.823Z|56099"];
+        console.log(FudgeCore.Project.resources);
         agent = graph.getChildrenByName("Agents")[0].getChildrenByName("Agent_1")[0];
         console.log("Copy", copyLaser);
         for (let i = 0; i < 3; i++) {
@@ -149,10 +232,12 @@ var Script;
                 copyLaser.mtxLocal.translateX(-13.5 + i * 7.5);
                 copyLaser.mtxLocal.translateY(-7.5 + j * 7.5);
                 if (j >= 1) {
-                    copyLaser.getComponent(Script.LaserRotator).rotationSpeed *= -1;
+                    copyLaser.getComponent(LaserLeague.LaserRotator).rotationSpeed *= -1;
                 }
             }
         }
+        //gameManager = GameManager.getInstance();
+        //gameManager.start();
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
@@ -171,5 +256,5 @@ var Script;
         ctrlRotation.setInput(inputrotationvalue);
         agent.mtxLocal.rotateZ(ctrlRotation.getOutput() * deltaTime * 360);
     }
-})(Script || (Script = {}));
+})(LaserLeague || (LaserLeague = {}));
 //# sourceMappingURL=Script.js.map
