@@ -5,6 +5,10 @@ var LaserLeague;
     class Agent extends ƒ.Node {
         constructor() {
             super("Agent");
+            this.addComponent(new ƒ.ComponentTransform);
+            this.addComponent(new ƒ.ComponentMesh(new ƒ.MeshQuad("MeshAgent")));
+            this.addComponent(new ƒ.ComponentMaterial(new ƒ.Material("mtrAgent", ƒ.ShaderUniColor, new ƒ.CoatColored(new ƒ.Color(1, 0, 1, 1)))));
+            this.mtxLocal.scale(ƒ.Vector3.ONE(0.5));
         }
     }
     LaserLeague.Agent = Agent;
@@ -20,7 +24,7 @@ var LaserLeague;
         message = "CollisionDetector added to ";
         viewport;
         deltaTime;
-        agent;
+        //public agent: ƒ.Node;
         sceneGraph;
         constructor() {
             super();
@@ -31,16 +35,6 @@ var LaserLeague;
             this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
             this.addEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
         }
-        static checkCollision = (collider, obstacle) => {
-            let distance = ƒ.Vector3.TRANSFORMATION(collider.mtxWorld.translation, obstacle.mtxWorldInverse, true);
-            let minX = obstacle.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.x / 2 + collider.radius;
-            let minY = obstacle.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.y + collider.radius;
-            if (distance.x <= (minX) && distance.x >= -(minX) && distance.y <= minY && distance.y >= 0) {
-                //do something
-                console.log("intersecting");
-                //agent.getComponent(ƒ.ComponentTransform).mutate(agentoriginalpos);
-            }
-        };
         // Activate the functions of this component as response to events
         hndEvent = (_event) => {
             switch (_event.type) {
@@ -62,6 +56,21 @@ var LaserLeague;
             this.sceneGraph = FudgeCore.Project.resources["Graph|2021-10-13T12:42:15.134Z|58505"];
             this.deltaTime = ƒ.Loop.timeFrameReal / 1000;
             //CollisionDetector.checkCollision(this.node, this.agent);
+        };
+        checkCollision = (collider) => {
+            let distance = ƒ.Vector3.TRANSFORMATION(collider.mtxWorld.translation, this.node.mtxWorldInverse, true);
+            //console.log(distance);  
+            let minX = this.node.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.x / 2 + collider.radius;
+            let minY = this.node.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.y + collider.radius;
+            if (distance.x <= (minX) && distance.x >= -(minX) && distance.y <= minY && distance.y >= 0) {
+                //do something
+                console.log("intersecting with" + this.node.name);
+                return true;
+                //agent.getComponent(ƒ.ComponentTransform).mutate(agentoriginalpos);
+            }
+            else {
+                return false;
+            }
         };
     }
     LaserLeague.CollisionDetector = CollisionDetector;
@@ -146,12 +155,11 @@ var LaserLeague;
             console.log("thats what you looking for: " + this.node);
             //this.sceneGraph = this.node; //<ƒ.Graph>FudgeCore.Project.resources["Graph|2021-10-13T12:42:15.134Z|58505"];
             //this.agent = this.sceneGraph.getChildrenByName("Agents")[0].getChildrenByName("Agent_1")[0];
-            //hier code einfuegen um agent zu generieren
             ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, this.update);
             this.deltaTime = ƒ.Loop.timeFrameReal / 1000;
         };
         update = (_event) => {
-            LaserLeague.CollisionDetector.checkCollision(this.node, this.agent);
+            //CollisionDetector.checkCollision(this.node, this.agent);
         };
     }
     LaserLeague.GameManager = GameManager;
@@ -208,6 +216,8 @@ var LaserLeague;
     //let lasertransforms: ƒ.Matrix4x4[];
     let agent;
     let copyLaser;
+    let graph;
+    let agents;
     //let gameManager: GameManager;
     //let beams: ƒ.Node[];
     let ctrlForward = new ƒ.Control("Forward", 1, 0 /* PROPORTIONAL */);
@@ -220,7 +230,7 @@ var LaserLeague;
     document.addEventListener("interactiveViewportStarted", start);
     async function start(_event) {
         viewport = _event.detail;
-        let graph = viewport.getBranch();
+        graph = viewport.getBranch();
         let graphLaser = FudgeCore.Project.resources["Graph|2021-11-02T13:37:28.823Z|56099"];
         console.log(FudgeCore.Project.resources);
         agent = graph.getChildrenByName("Agents")[0].getChildrenByName("Agent_1")[0];
@@ -236,6 +246,8 @@ var LaserLeague;
                 }
             }
         }
+        agent = new LaserLeague.Agent();
+        graph.getChildrenByName("Agents")[0].addChild(agent);
         //gameManager = GameManager.getInstance();
         //gameManager.start();
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
@@ -255,6 +267,17 @@ var LaserLeague;
             + (ƒ.Keyboard.mapToValue(1, 0, [ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT]));
         ctrlRotation.setInput(inputrotationvalue);
         agent.mtxLocal.rotateZ(ctrlRotation.getOutput() * deltaTime * 360);
+        agents = graph.getChildrenByName("Agents")[0].getChildren();
+        //console.log(agents.length);
+        graph.getChildrenByName("Lasers")[0].getChildren().forEach(laser => {
+            laser.getChildrenByName("Beam").forEach(beam => {
+                agents.forEach(_agent => {
+                    if (beam.getComponent(LaserLeague.CollisionDetector).checkCollision(_agent)) {
+                        console.log(_agent.name + " you dead!");
+                    }
+                });
+            });
+        });
     }
 })(LaserLeague || (LaserLeague = {}));
 //# sourceMappingURL=Script.js.map

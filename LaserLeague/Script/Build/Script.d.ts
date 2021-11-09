@@ -11,13 +11,12 @@ declare namespace LaserLeague {
         message: string;
         viewport: ƒ.Viewport;
         deltaTime: number;
-        agent: ƒ.Node;
         sceneGraph: ƒ.Graph;
         constructor();
-        static checkCollision: (collider: ƒ.Node, obstacle: ƒ.Node) => void;
         hndEvent: (_event: Event) => void;
         start(): void;
         update: (_event: Event) => void;
+        checkCollision: (collider: ƒ.Node) => boolean;
     }
 }
 declare namespace LaserLeague {

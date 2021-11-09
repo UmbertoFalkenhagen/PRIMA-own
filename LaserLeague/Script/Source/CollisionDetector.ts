@@ -10,7 +10,7 @@ namespace LaserLeague {
 
     public viewport: ƒ.Viewport;
     public deltaTime: number;
-    public agent: ƒ.Node;
+    //public agent: ƒ.Node;
     public sceneGraph: ƒ.Graph;
 
 
@@ -24,17 +24,6 @@ namespace LaserLeague {
       // Listen to this component being added to or removed from a node
       this.addEventListener(ƒ.EVENT.COMPONENT_ADD, this.hndEvent);
       this.addEventListener(ƒ.EVENT.COMPONENT_REMOVE, this.hndEvent);
-    }
-
-    public static checkCollision = (collider: ƒ.Node, obstacle: ƒ.Node) =>{
-      let distance: ƒ.Vector3 = ƒ.Vector3.TRANSFORMATION(collider.mtxWorld.translation, obstacle.mtxWorldInverse, true);   
-      let minX = obstacle.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.x / 2 + collider.radius;
-      let minY = obstacle.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.y + collider.radius;
-      if (distance.x <= (minX) && distance.x >= -(minX) && distance.y <= minY && distance.y >= 0) {
-        //do something
-        console.log("intersecting");
-        //agent.getComponent(ƒ.ComponentTransform).mutate(agentoriginalpos);
-      }
     }
 
     // Activate the functions of this component as response to events
@@ -62,6 +51,21 @@ namespace LaserLeague {
       this.sceneGraph = <ƒ.Graph>FudgeCore.Project.resources["Graph|2021-10-13T12:42:15.134Z|58505"];
       this.deltaTime = ƒ.Loop.timeFrameReal / 1000;
       //CollisionDetector.checkCollision(this.node, this.agent);
+    }
+
+    public checkCollision = (collider: ƒ.Node): boolean => {
+      let distance: ƒ.Vector3 = ƒ.Vector3.TRANSFORMATION(collider.mtxWorld.translation, this.node.mtxWorldInverse, true); 
+      //console.log(distance);  
+      let minX: number = this.node.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.x / 2 + collider.radius;
+      let minY: number = this.node.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.y + collider.radius;
+      if (distance.x <= (minX) && distance.x >= -(minX) && distance.y <= minY && distance.y >= 0) {
+        //do something
+        console.log("intersecting with" + this.node.name);
+        return true;
+        //agent.getComponent(ƒ.ComponentTransform).mutate(agentoriginalpos);
+      } else {
+        return false;
+      }
     }
 
     // protected reduceMutator(_mutator: ƒ.Mutator): void {

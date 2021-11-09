@@ -54,14 +54,14 @@ namespace LaserLeague {
       console.log("thats what you looking for: " + this.node);
       //this.sceneGraph = this.node; //<ƒ.Graph>FudgeCore.Project.resources["Graph|2021-10-13T12:42:15.134Z|58505"];
       //this.agent = this.sceneGraph.getChildrenByName("Agents")[0].getChildrenByName("Agent_1")[0];
-      //hier code einfuegen um agent zu generieren
+      
       ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
       this.deltaTime = ƒ.Loop.timeFrameReal / 1000;
     }
 
     public update = (_event: Event): void =>{
       
-      CollisionDetector.checkCollision(this.node, this.agent);
+      //CollisionDetector.checkCollision(this.node, this.agent);
     }
 
 

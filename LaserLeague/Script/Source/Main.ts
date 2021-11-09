@@ -5,8 +5,10 @@ namespace LaserLeague {
   let viewport: ƒ.Viewport;
   //let lasertransforms: ƒ.Matrix4x4[];
   
-  let agent: ƒ.Node;
+  let agent: Agent;
   let copyLaser: ƒ.GraphInstance;
+  let graph: ƒ.Node;
+  let agents: Agent[];
   //let gameManager: GameManager;
 
   //let beams: ƒ.Node[];
@@ -19,10 +21,11 @@ namespace LaserLeague {
   let deltaTime: number;
   //let agentMoveDirection: number = 0;
   document.addEventListener("interactiveViewportStarted",  <EventListener><unknown>start);
+  
 
   async function start(_event: CustomEvent): Promise<void> {
     viewport = _event.detail;
-    let graph: ƒ.Node = viewport.getBranch();
+    graph = viewport.getBranch();
 
     let graphLaser: ƒ.Graph = <ƒ.Graph>FudgeCore.Project.resources["Graph|2021-11-02T13:37:28.823Z|56099"];
     console.log(FudgeCore.Project.resources);
@@ -41,6 +44,8 @@ namespace LaserLeague {
       }
     }
     
+    agent = new Agent();
+    graph.getChildrenByName("Agents")[0].addChild(agent);
     //gameManager = GameManager.getInstance();
     //gameManager.start();
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
@@ -67,8 +72,20 @@ namespace LaserLeague {
 
     ctrlRotation.setInput(inputrotationvalue);
     agent.mtxLocal.rotateZ(ctrlRotation.getOutput() * deltaTime * 360);
-    
 
+    agents = graph.getChildrenByName("Agents")[0].getChildren();
+    //console.log(agents.length);
+    
+    graph.getChildrenByName("Lasers")[0].getChildren().forEach(laser => {
+        laser.getChildrenByName("Beam").forEach(beam => {
+          agents.forEach(_agent => {
+            if (beam.getComponent(CollisionDetector).checkCollision(_agent)) {
+              console.log(_agent.name + " you dead!");
+            }
+          });
+        });
+    });
+    
     
   }
     
