@@ -10,9 +10,8 @@ namespace LaserLeague {
 
     public viewport: ƒ.Viewport;
     public deltaTime: number;
-    //public agent: ƒ.Node;
+    public agents: ƒ.Node[];
     public sceneGraph: ƒ.Graph;
-
 
     constructor() {
       super();
@@ -47,25 +46,40 @@ namespace LaserLeague {
       
     }
 
-    public update = (_event: Event): void =>{
+    public update = (_event: Event): void => {
       this.sceneGraph = <ƒ.Graph>FudgeCore.Project.resources["Graph|2021-10-13T12:42:15.134Z|58505"];
       this.deltaTime = ƒ.Loop.timeFrameReal / 1000;
-      //CollisionDetector.checkCollision(this.node, this.agent);
+      this.agents = this.sceneGraph.getChildrenByName("Agents")[0].getChildren();
+      //console.log(this.agents.length);
+      /*this.agents.forEach(agent => {
+        this.checkCollision(agent);
+      });*/
     }
 
     public checkCollision = (collider: ƒ.Node): boolean => {
-      let distance: ƒ.Vector3 = ƒ.Vector3.TRANSFORMATION(collider.mtxWorld.translation, this.node.mtxWorldInverse, true); 
-      //console.log(distance);  
-      let minX: number = this.node.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.x / 2 + collider.radius;
-      let minY: number = this.node.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.y + collider.radius;
-      if (distance.x <= (minX) && distance.x >= -(minX) && distance.y <= minY && distance.y >= 0) {
-        //do something
-        console.log("intersecting with" + this.node.name);
+      let posLocal: ƒ.Vector3 = ƒ.Vector3.TRANSFORMATION(collider.mtxWorld.translation, this.node.mtxWorldInverse, true);
+      let x: number = this.node.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.x / 2 + collider.radius / 2;
+      let y: number = this.node.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.y + collider.radius / 2;
+
+      if (posLocal.x <= (x) && posLocal.x >= -(x) && posLocal.y <= y && posLocal.y >= 0) {
+        console.log("intersecting");
         return true;
-        //agent.getComponent(ƒ.ComponentTransform).mutate(agentoriginalpos);
+        //_agent.getComponent(agentComponentScript).respawn();
       } else {
         return false;
       }
+      
+      
+      /*let distance: ƒ.Vector3 = ƒ.Vector3.TRANSFORMATION(collider.mtxWorld.translation, this.node.mtxWorldInverse, true);  
+      let minX: number = this.node.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.x / 2 + collider.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.x / 2;
+      let minY: number = this.node.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.y + collider.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.x / 2;);
+      if (distance.x <= (minX) && distance.x >= -(minX) && distance.y <= minY && distance.y >= 0) {
+        //do something
+        console.log("intersecting with " + this.node);
+        return true;
+      } else {
+        return false;
+      }*/
     }
 
     // protected reduceMutator(_mutator: ƒ.Mutator): void {

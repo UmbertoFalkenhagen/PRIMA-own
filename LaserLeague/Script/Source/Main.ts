@@ -11,7 +11,7 @@ namespace LaserLeague {
   let agents: Agent[];
   //let gameManager: GameManager;
 
-  //let beams: ƒ.Node[];
+  let lasers: ƒ.Node[];
 
   let ctrlForward: ƒ.Control = new ƒ.Control("Forward", 1, ƒ.CONTROL_TYPE.PROPORTIONAL);
   ctrlForward.setDelay(200);
@@ -38,7 +38,7 @@ namespace LaserLeague {
         graph.getChildrenByName("Lasers")[0].addChild(copyLaser);
         copyLaser.mtxLocal.translateX(-13.5 + i * 7.5);
         copyLaser.mtxLocal.translateY(-7.5 + j * 7.5);
-        if (j>=1) {
+        if (j >= 1) {
           copyLaser.getComponent(LaserRotator).rotationSpeed *= -1;
         }
       }
@@ -74,19 +74,39 @@ namespace LaserLeague {
     agent.mtxLocal.rotateZ(ctrlRotation.getOutput() * deltaTime * 360);
 
     agents = graph.getChildrenByName("Agents")[0].getChildren();
-    //console.log(agents.length);
-    
-    graph.getChildrenByName("Lasers")[0].getChildren().forEach(laser => {
-        laser.getChildrenByName("Beam").forEach(beam => {
-          agents.forEach(_agent => {
-            if (beam.getComponent(CollisionDetector).checkCollision(_agent)) {
-              console.log(_agent.name + " you dead!");
-            }
-          });
+    lasers = graph.getChildrenByName("Lasers")[0].getChildren();
+    console.log(lasers.length);
+    let beams: ƒ.Node[];
+    lasers.forEach(laser => {
+      beams = laser.getChildren();
+      beams.forEach(beam => {
+        agents.forEach(agent => {
+          if (beam.getComponent(CollisionDetector).checkCollision(agent)) {
+            console.log(agent.name + " you dead!");
+            agent.mtxLocal.translation = new ƒ.Vector3(0, 0, 1);
+          }
         });
+      });
+    });
+    //console.log(agents.length);
+    /*let lasercounter: number = 0;
+    graph.getChildrenByName("Lasers")[0].getChildren().forEach(laser => {
+      let beamcounter: number = 0;
+      laser.getChildrenByName("Beam").forEach(beam => {
+        console.log("Scanning beam _" + beamcounter + " of Laser _" + lasercounter)
+        agents.forEach(_agent => {
+          if (beam.getComponent(CollisionDetector).checkCollision(_agent)) {
+            console.log(_agent.name + " you dead!");
+            _agent.mtxLocal.translation = new ƒ.Vector3(0, 0, 1);
+          }
+          beamcounter ++;
+        });
+        lasercounter ++;
+      });
     });
     
     
-  }
+  }*/
     
+}
 }

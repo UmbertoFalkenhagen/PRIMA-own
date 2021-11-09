@@ -12,7 +12,7 @@ namespace LaserLeague {
               new ƒ.Material("mtrAgent", ƒ.ShaderUniColor, new ƒ.CoatColored(new ƒ.Color(1, 0, 1, 1))))
             );
       
-            this.mtxLocal.scale(ƒ.Vector3.ONE(0.5));
+            //this.mtxLocal.scale(ƒ.Vector3.ONE(0.5));
           }
     }
 }

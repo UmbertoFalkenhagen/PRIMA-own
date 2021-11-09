@@ -97,6 +97,23 @@
               "message": "GameManager added to "
             }
           }
+        ],
+        "ComponentAudioListener": [
+          {
+            "ƒ.ComponentAudioListener": {
+              "active": true
+            }
+          }
+        ],
+        "ComponentAudio": [
+          {
+            "ƒ.ComponentAudio": {
+              "active": true,
+              "playing": true,
+              "loop": true,
+              "volume": 1
+            }
+          }
         ]
       },
       "children": [

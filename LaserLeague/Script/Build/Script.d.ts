@@ -11,6 +11,7 @@ declare namespace LaserLeague {
         message: string;
         viewport: ƒ.Viewport;
         deltaTime: number;
+        agents: ƒ.Node[];
         sceneGraph: ƒ.Graph;
         constructor();
         hndEvent: (_event: Event) => void;
