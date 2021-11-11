@@ -84,6 +84,7 @@ namespace LaserLeague {
           if (beam.getComponent(CollisionDetector).checkCollision(agent)) {
             console.log(agent.name + " you dead!");
             agent.mtxLocal.translation = new ƒ.Vector3(0, 0, 1);
+            graph.getComponents(ƒ.ComponentAudio)[1].play(true);
           }
         });
       });

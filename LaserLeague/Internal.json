@@ -109,8 +109,18 @@
           {
             "ƒ.ComponentAudio": {
               "active": true,
+              "idResource": "Audio|2021-11-11T11:10:44.072Z|06422",
               "playing": true,
               "loop": true,
+              "volume": 1
+            }
+          },
+          {
+            "ƒ.ComponentAudio": {
+              "active": true,
+              "idResource": "Audio|2021-11-11T11:10:54.447Z|19935",
+              "playing": false,
+              "loop": false,
               "volume": 1
             }
           }
@@ -630,6 +640,22 @@
       ],
       "idResource": "Graph|2021-11-02T13:37:28.823Z|56099",
       "type": "Graph"
+    }
+  },
+  "Audio|2021-11-11T11:10:44.072Z|06422": {
+    "ƒ.Audio": {
+      "url": "Sounds\\trancyvania.mp3",
+      "idResource": "Audio|2021-11-11T11:10:44.072Z|06422",
+      "name": "Sounds\\trancyvania.mp3",
+      "type": "Audio"
+    }
+  },
+  "Audio|2021-11-11T11:10:54.447Z|19935": {
+    "ƒ.Audio": {
+      "url": "Sounds\\mixkit-arcade-fast-game-over-233.mp3",
+      "idResource": "Audio|2021-11-11T11:10:54.447Z|19935",
+      "name": "Sounds\\mixkit-arcade-fast-game-over-233.mp3",
+      "type": "Audio"
     }
   }
 }
