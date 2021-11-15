@@ -33,8 +33,8 @@ declare namespace LaserLeague {
     import ƒ = FudgeCore;
     class GameManager extends ƒ.ComponentScript {
         static readonly iSubclass: number;
-        message: string;
         private static instance;
+        message: string;
         deltaTime: number;
         agent: ƒ.Node;
         sceneGraph: ƒ.Node;
@@ -53,6 +53,9 @@ declare namespace LaserLeague {
         viewport: ƒ.Viewport;
         rotationSpeed: number;
         deltaTime: number;
+        sceneGraph: ƒ.Graph;
+        beams: ƒ.Node[];
+        agents: ƒ.Node[];
         constructor();
         hndEvent: (_event: Event) => void;
         start(): void;

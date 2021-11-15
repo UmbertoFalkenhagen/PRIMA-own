@@ -3,11 +3,13 @@ namespace LaserLeague {
   ƒ.Project.registerScriptNamespace(LaserLeague);  // Register the namespace to FUDGE for serialization
 
   export class GameManager extends ƒ.ComponentScript {
+    
     // Register the script as component for use in the editor via drag&drop
     public static readonly iSubclass: number = ƒ.Component.registerSubclass(GameManager);
+    private static instance: GameManager;
     // Properties may be mutated by users in the editor via the automatically created user interface
     public message: string = "GameManager added to ";
-    private static instance: GameManager;
+    
 
     public deltaTime: number;
     public agent: ƒ.Node;
@@ -50,7 +52,7 @@ namespace LaserLeague {
       }
     }
 
-    public start =(): void  =>{
+    public start = (): void  => {
       console.log("thats what you looking for: " + this.node);
       //this.sceneGraph = this.node; //<ƒ.Graph>FudgeCore.Project.resources["Graph|2021-10-13T12:42:15.134Z|58505"];
       //this.agent = this.sceneGraph.getChildrenByName("Agents")[0].getChildrenByName("Agent_1")[0];
@@ -59,7 +61,7 @@ namespace LaserLeague {
       this.deltaTime = ƒ.Loop.timeFrameReal / 1000;
     }
 
-    public update = (_event: Event): void =>{
+    public update = (_event: Event): void => {
       
       //CollisionDetector.checkCollision(this.node, this.agent);
     }

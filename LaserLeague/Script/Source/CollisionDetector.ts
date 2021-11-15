@@ -41,7 +41,7 @@ namespace LaserLeague {
 
     public start (): void  {
      
-      //this.agent = this.sceneGraph.getChildrenByName("Agents")[0].getChildrenByName("Agent_1")[0];
+      
       ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
       
     }
@@ -57,6 +57,7 @@ namespace LaserLeague {
     }
 
     public checkCollision = (collider: ƒ.Node): boolean => {
+      //let mesh: ƒ.ComponentMesh = this.node.getComponent(ƒ.ComponentMesh);
       let posLocal: ƒ.Vector3 = ƒ.Vector3.TRANSFORMATION(collider.mtxWorld.translation, this.node.mtxWorldInverse, true);
       let x: number = this.node.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.x / 2 + collider.radius / 2;
       let y: number = this.node.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.y + collider.radius / 2;

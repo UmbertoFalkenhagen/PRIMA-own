@@ -49,7 +49,6 @@ var LaserLeague;
             }
         };
         start() {
-            //this.agent = this.sceneGraph.getChildrenByName("Agents")[0].getChildrenByName("Agent_1")[0];
             ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, this.update);
         }
         update = (_event) => {
@@ -62,6 +61,7 @@ var LaserLeague;
             });*/
         };
         checkCollision = (collider) => {
+            //let mesh: ƒ.ComponentMesh = this.node.getComponent(ƒ.ComponentMesh);
             let posLocal = ƒ.Vector3.TRANSFORMATION(collider.mtxWorld.translation, this.node.mtxWorldInverse, true);
             let x = this.node.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.x / 2 + collider.radius / 2;
             let y = this.node.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.y + collider.radius / 2;
@@ -127,9 +127,9 @@ var LaserLeague;
     class GameManager extends ƒ.ComponentScript {
         // Register the script as component for use in the editor via drag&drop
         static iSubclass = ƒ.Component.registerSubclass(GameManager);
+        static instance;
         // Properties may be mutated by users in the editor via the automatically created user interface
         message = "GameManager added to ";
-        static instance;
         deltaTime;
         agent;
         sceneGraph;
@@ -188,6 +188,9 @@ var LaserLeague;
         viewport;
         rotationSpeed = 90;
         deltaTime;
+        sceneGraph;
+        beams;
+        agents;
         constructor() {
             super();
             // Don't start when running in editor
@@ -211,11 +214,19 @@ var LaserLeague;
             }
         };
         start() {
+            this.beams = this.node.getChildren();
+            this.sceneGraph = FudgeCore.Project.resources["Graph|2021-10-13T12:42:15.134Z|58505"];
             ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, this.update);
         }
         update = (_event) => {
             this.deltaTime = ƒ.Loop.timeFrameReal / 1000;
             this.node.mtxLocal.rotateZ(this.rotationSpeed * this.deltaTime);
+            /*this.agents = this.sceneGraph.getChildrenByName("Agents")[0].getChildren();
+            this.beams.forEach(beam => {
+              this.agents.forEach(agent => {
+                beam.getComponent(CollisionDetector).checkCollision(agent);
+              });
+            });*/
         };
     }
     LaserLeague.LaserRotator = LaserRotator;
@@ -243,7 +254,7 @@ var LaserLeague;
     async function start(_event) {
         viewport = _event.detail;
         graph = viewport.getBranch();
-        let graphLaser = FudgeCore.Project.resources["Graph|2021-11-02T13:37:28.823Z|56099"];
+        let graphLaser = FudgeCore.Project.resources["Graph|2021-11-15T14:16:57.937Z|42317"];
         console.log(FudgeCore.Project.resources);
         agent = graph.getChildrenByName("Agents")[0].getChildrenByName("Agent_1")[0];
         console.log("Copy", copyLaser);
@@ -251,8 +262,8 @@ var LaserLeague;
             for (let j = 0; j < 2; j++) {
                 copyLaser = await ƒ.Project.createGraphInstance(graphLaser);
                 graph.getChildrenByName("Lasers")[0].addChild(copyLaser);
-                copyLaser.mtxLocal.translateX(-13.5 + i * 7.5);
-                copyLaser.mtxLocal.translateY(-7.5 + j * 7.5);
+                copyLaser.mtxLocal.translateX(-10 + i * 10);
+                copyLaser.mtxLocal.translateY(-4 + j * 8);
                 if (j >= 1) {
                     copyLaser.getComponent(LaserLeague.LaserRotator).rotationSpeed *= -1;
                 }
@@ -284,13 +295,14 @@ var LaserLeague;
         console.log(lasers.length);
         let beams;
         lasers.forEach(laser => {
-            beams = laser.getChildren();
+            beams = laser.getChildrenByName("Beam");
             beams.forEach(beam => {
                 agents.forEach(agent => {
                     if (beam.getComponent(LaserLeague.CollisionDetector).checkCollision(agent)) {
                         console.log(agent.name + " you dead!");
                         agent.mtxLocal.translation = new ƒ.Vector3(0, 0, 1);
-                        graph.getComponents(ƒ.ComponentAudio)[1].play(true);
+                        let dieSound = graph.getComponents(ƒ.ComponentAudio)[1];
+                        dieSound.play(true);
                     }
                 });
             });

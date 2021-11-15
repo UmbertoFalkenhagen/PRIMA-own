@@ -27,7 +27,7 @@ namespace LaserLeague {
     viewport = _event.detail;
     graph = viewport.getBranch();
 
-    let graphLaser: ƒ.Graph = <ƒ.Graph>FudgeCore.Project.resources["Graph|2021-11-02T13:37:28.823Z|56099"];
+    let graphLaser: ƒ.Graph = <ƒ.Graph>FudgeCore.Project.resources["Graph|2021-11-15T14:16:57.937Z|42317"];
     console.log(FudgeCore.Project.resources);
     agent = graph.getChildrenByName("Agents")[0].getChildrenByName("Agent_1")[0];
     
@@ -36,8 +36,8 @@ namespace LaserLeague {
       for (let j: number = 0; j < 2; j++) {
         copyLaser = await ƒ.Project.createGraphInstance(graphLaser);
         graph.getChildrenByName("Lasers")[0].addChild(copyLaser);
-        copyLaser.mtxLocal.translateX(-13.5 + i * 7.5);
-        copyLaser.mtxLocal.translateY(-7.5 + j * 7.5);
+        copyLaser.mtxLocal.translateX(-10 + i * 10);
+        copyLaser.mtxLocal.translateY(-4 + j * 8);
         if (j >= 1) {
           copyLaser.getComponent(LaserRotator).rotationSpeed *= -1;
         }
@@ -78,13 +78,14 @@ namespace LaserLeague {
     console.log(lasers.length);
     let beams: ƒ.Node[];
     lasers.forEach(laser => {
-      beams = laser.getChildren();
+      beams = laser.getChildrenByName("Beam");
       beams.forEach(beam => {
         agents.forEach(agent => {
           if (beam.getComponent(CollisionDetector).checkCollision(agent)) {
             console.log(agent.name + " you dead!");
             agent.mtxLocal.translation = new ƒ.Vector3(0, 0, 1);
-            graph.getComponents(ƒ.ComponentAudio)[1].play(true);
+            let dieSound: ƒ.ComponentAudio = graph.getComponents(ƒ.ComponentAudio)[1];
+            dieSound.play(true);
           }
         });
       });

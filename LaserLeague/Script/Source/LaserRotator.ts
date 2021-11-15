@@ -12,6 +12,9 @@ namespace LaserLeague {
 
     public rotationSpeed: number = 90;
     public deltaTime: number;
+    public sceneGraph: ƒ.Graph;
+    public beams: ƒ.Node[];
+    public agents: ƒ.Node[];
 
     constructor() {
       super();
@@ -41,13 +44,21 @@ namespace LaserLeague {
     }
 
     public start (): void  {
-
+      this.beams = this.node.getChildren();
+      this.sceneGraph = <ƒ.Graph>FudgeCore.Project.resources["Graph|2021-10-13T12:42:15.134Z|58505"];
       ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
     }
 
-    public update = (_event: Event): void =>{
+    public update = (_event: Event): void => {
       this.deltaTime = ƒ.Loop.timeFrameReal / 1000;
       this.node.mtxLocal.rotateZ(this.rotationSpeed * this.deltaTime);
+      /*this.agents = this.sceneGraph.getChildrenByName("Agents")[0].getChildren();
+      this.beams.forEach(beam => {
+        this.agents.forEach(agent => {
+          beam.getComponent(CollisionDetector).checkCollision(agent);
+        });
+      });*/
+      
     }
 
     // protected reduceMutator(_mutator: ƒ.Mutator): void {
