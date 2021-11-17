@@ -60,6 +60,7 @@ declare namespace LaserLeague {
         hndEvent: (_event: Event) => void;
         start(): void;
         update: (_event: Event) => void;
+        hndRotationChangeEvent(_event: Event): void;
     }
 }
 declare namespace LaserLeague {

@@ -66,7 +66,8 @@ var LaserLeague;
             let x = this.node.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.x / 2 + collider.radius / 2;
             let y = this.node.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.y + collider.radius / 2;
             if (posLocal.x <= (x) && posLocal.x >= -(x) && posLocal.y <= y && posLocal.y >= 0) {
-                console.log("intersecting");
+                //console.log("intersecting");
+                this.node.dispatchEvent(new CustomEvent("collisionEvent", { bubbles: true }));
                 return true;
                 //_agent.getComponent(agentComponentScript).respawn();
             }
@@ -199,6 +200,7 @@ var LaserLeague;
             // Listen to this component being added to or removed from a node
             this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
             this.addEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
+            this.addEventListener("rotationChangeEvent", this.hndRotationChangeEvent);
         }
         // Activate the functions of this component as response to events
         hndEvent = (_event) => {
@@ -228,6 +230,9 @@ var LaserLeague;
               });
             });*/
         };
+        hndRotationChangeEvent(_event) {
+            console.log("Rotation change event received by " + _event.currentTarget);
+        }
     }
     LaserLeague.LaserRotator = LaserRotator;
 })(LaserLeague || (LaserLeague = {}));
@@ -250,10 +255,33 @@ var LaserLeague;
     let agentMoveSpeedFactor = 10;
     let deltaTime;
     //let agentMoveDirection: number = 0;
-    document.addEventListener("interactiveViewportStarted", start);
-    async function start(_event) {
-        viewport = _event.detail;
+    window.addEventListener("load", init);
+    function init(_event) {
+        let dialog = document.querySelector("dialog");
+        dialog.querySelector("h1").textContent = document.title;
+        dialog.addEventListener("click", (_event) => {
+            // @ts-ignore until HTMLDialog is implemented by all browsers and available in dom.d.ts
+            dialog.close();
+            start();
+        });
+        //@ts-ignore
+        dialog.showModal();
+    }
+    async function start() {
+        await ƒ.Project.loadResourcesFromHTML();
+        graph = ƒ.Project.resources["Graph|2021-10-13T12:42:15.134Z|58505"];
+        // setup Camera
+        let cmpCamera = new ƒ.ComponentCamera();
+        cmpCamera.mtxPivot.rotateY(180);
+        cmpCamera.mtxPivot.translateZ(-35);
+        graph.addComponent(cmpCamera);
+        let canvas = document.querySelector("canvas");
+        viewport = new ƒ.Viewport();
+        viewport.initialize("Viewport", graph, cmpCamera, canvas);
         graph = viewport.getBranch();
+        ƒ.AudioManager.default.listenTo(graph);
+        ƒ.AudioManager.default.listenWith(graph.getComponent(ƒ.ComponentAudioListener));
+        graph.addEventListener("collisionEvent", hndCollisionEvent);
         let graphLaser = FudgeCore.Project.resources["Graph|2021-11-15T14:16:57.937Z|42317"];
         console.log(FudgeCore.Project.resources);
         agent = graph.getChildrenByName("Agents")[0].getChildrenByName("Agent_1")[0];
@@ -264,6 +292,7 @@ var LaserLeague;
                 graph.getChildrenByName("Lasers")[0].addChild(copyLaser);
                 copyLaser.mtxLocal.translateX(-10 + i * 10);
                 copyLaser.mtxLocal.translateY(-4 + j * 8);
+                //copyLaser.addEventListener("rotationChangeEvent", copyLaser.getComponent(LaserRotator).hndRotationChangeEvent);
                 if (j >= 1) {
                     copyLaser.getComponent(LaserLeague.LaserRotator).rotationSpeed *= -1;
                 }
@@ -292,7 +321,7 @@ var LaserLeague;
         agent.mtxLocal.rotateZ(ctrlRotation.getOutput() * deltaTime * 360);
         agents = graph.getChildrenByName("Agents")[0].getChildren();
         lasers = graph.getChildrenByName("Lasers")[0].getChildren();
-        console.log(lasers.length);
+        //console.log(lasers.length);
         let beams;
         lasers.forEach(laser => {
             beams = laser.getChildrenByName("Beam");
@@ -326,6 +355,10 @@ var LaserLeague;
         
         
       }*/
+    }
+    function hndCollisionEvent(_event) {
+        console.log("Collision event received by", _event.currentTarget);
+        graph.broadcastEvent(new CustomEvent("rotationChangeEvent"));
     }
 })(LaserLeague || (LaserLeague = {}));
 //# sourceMappingURL=Script.js.map

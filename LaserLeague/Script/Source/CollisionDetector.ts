@@ -44,6 +44,7 @@ namespace LaserLeague {
       
       ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
       
+      
     }
 
     public update = (_event: Event): void => {
@@ -63,7 +64,8 @@ namespace LaserLeague {
       let y: number = this.node.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.y + collider.radius / 2;
 
       if (posLocal.x <= (x) && posLocal.x >= -(x) && posLocal.y <= y && posLocal.y >= 0) {
-        console.log("intersecting");
+        //console.log("intersecting");
+        this.node.dispatchEvent(new CustomEvent("collisionEvent", { bubbles: true }));
         return true;
         //_agent.getComponent(agentComponentScript).respawn();
       } else {
@@ -82,6 +84,7 @@ namespace LaserLeague {
         return false;
       }*/
     }
+
 
     // protected reduceMutator(_mutator: ƒ.Mutator): void {
     //   // delete properties that should not be mutated
