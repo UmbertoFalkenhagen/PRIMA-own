@@ -12,9 +12,6 @@ namespace LaserLeague {
 
     public rotationSpeed: number = 90;
     public deltaTime: number;
-    public sceneGraph: ƒ.Graph;
-    public beams: ƒ.Node[];
-    public agents: ƒ.Node[];
 
     constructor() {
       super();
@@ -27,7 +24,7 @@ namespace LaserLeague {
       this.addEventListener(ƒ.EVENT.COMPONENT_ADD, this.hndEvent);
       this.addEventListener(ƒ.EVENT.COMPONENT_REMOVE, this.hndEvent);
 
-      this.addEventListener("rotationChangeEvent", this.hndRotationChangeEvent);
+      
 
     }
 
@@ -46,10 +43,8 @@ namespace LaserLeague {
     }
 
     public start (): void  {
-      this.beams = this.node.getChildren();
-      this.sceneGraph = <ƒ.Graph>FudgeCore.Project.resources["Graph|2021-10-13T12:42:15.134Z|58505"];
       ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
-      
+
     }
 
     public update = (_event: Event): void => {
@@ -66,7 +61,10 @@ namespace LaserLeague {
 
     public hndRotationChangeEvent(_event: Event): void {
       console.log("Rotation change event received by " + _event.currentTarget);
+      //console.log(this.node.name);
     }
+
+    
 
     // protected reduceMutator(_mutator: ƒ.Mutator): void {
     //   // delete properties that should not be mutated

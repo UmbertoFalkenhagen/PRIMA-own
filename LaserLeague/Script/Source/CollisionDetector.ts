@@ -71,19 +71,8 @@ namespace LaserLeague {
       } else {
         return false;
       }
-      
-      
-      /*let distance: ƒ.Vector3 = ƒ.Vector3.TRANSFORMATION(collider.mtxWorld.translation, this.node.mtxWorldInverse, true);  
-      let minX: number = this.node.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.x / 2 + collider.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.x / 2;
-      let minY: number = this.node.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.y + collider.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.x / 2;);
-      if (distance.x <= (minX) && distance.x >= -(minX) && distance.y <= minY && distance.y >= 0) {
-        //do something
-        console.log("intersecting with " + this.node);
-        return true;
-      } else {
-        return false;
-      }*/
     }
+
 
 
     // protected reduceMutator(_mutator: ƒ.Mutator): void {

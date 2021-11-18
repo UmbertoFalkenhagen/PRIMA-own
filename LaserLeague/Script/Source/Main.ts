@@ -3,15 +3,15 @@ namespace LaserLeague {
   ƒ.Debug.info("Main Program Template running!");
 
   let viewport: ƒ.Viewport;
-  //let lasertransforms: ƒ.Matrix4x4[];
   
   let agent: Agent;
   let copyLaser: ƒ.GraphInstance;
   let graph: ƒ.Node;
   let agents: Agent[];
-  //let gameManager: GameManager;
 
   let lasers: ƒ.Node[];
+
+  //const event = new CustomEvent('build', { detail: {graph, lasers} }); //Example event with custom data
 
   let ctrlForward: ƒ.Control = new ƒ.Control("Forward", 1, ƒ.CONTROL_TYPE.PROPORTIONAL);
   ctrlForward.setDelay(200);
@@ -19,7 +19,7 @@ namespace LaserLeague {
   ctrlRotation.setDelay(200);
   let agentMoveSpeedFactor: number = 10;
   let deltaTime: number;
-  //let agentMoveDirection: number = 0;
+
   window.addEventListener("load", init);
 
   function init(_event: Event): void {
@@ -51,7 +51,7 @@ namespace LaserLeague {
     ƒ.AudioManager.default.listenTo(graph);
     ƒ.AudioManager.default.listenWith(graph.getComponent(ƒ.ComponentAudioListener));
 
-    graph.addEventListener("collisionEvent", hndCollisionEvent);
+    graph.addEventListener("collisionEvent", hndCollisionEvent, false);
 
     let graphLaser: ƒ.Graph = <ƒ.Graph>FudgeCore.Project.resources["Graph|2021-11-15T14:16:57.937Z|42317"];
     console.log(FudgeCore.Project.resources);
@@ -64,7 +64,7 @@ namespace LaserLeague {
         graph.getChildrenByName("Lasers")[0].addChild(copyLaser);
         copyLaser.mtxLocal.translateX(-10 + i * 10);
         copyLaser.mtxLocal.translateY(-4 + j * 8);
-        //copyLaser.addEventListener("rotationChangeEvent", copyLaser.getComponent(LaserRotator).hndRotationChangeEvent);
+        copyLaser.addEventListener("rotationChangeEvent", copyLaser.getComponent(LaserRotator).hndRotationChangeEvent, true);
         if (j >= 1) {
           copyLaser.getComponent(LaserRotator).rotationSpeed *= -1;
         }
@@ -73,8 +73,7 @@ namespace LaserLeague {
     
     agent = new Agent();
     graph.getChildrenByName("Agents")[0].addChild(agent);
-    //gameManager = GameManager.getInstance();
-    //gameManager.start();
+
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     

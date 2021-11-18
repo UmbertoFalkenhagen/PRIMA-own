@@ -53,9 +53,6 @@ declare namespace LaserLeague {
         viewport: ƒ.Viewport;
         rotationSpeed: number;
         deltaTime: number;
-        sceneGraph: ƒ.Graph;
-        beams: ƒ.Node[];
-        agents: ƒ.Node[];
         constructor();
         hndEvent: (_event: Event) => void;
         start(): void;

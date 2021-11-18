@@ -74,16 +74,6 @@ var LaserLeague;
             else {
                 return false;
             }
-            /*let distance: ƒ.Vector3 = ƒ.Vector3.TRANSFORMATION(collider.mtxWorld.translation, this.node.mtxWorldInverse, true);
-            let minX: number = this.node.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.x / 2 + collider.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.x / 2;
-            let minY: number = this.node.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.y + collider.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.x / 2;);
-            if (distance.x <= (minX) && distance.x >= -(minX) && distance.y <= minY && distance.y >= 0) {
-              //do something
-              console.log("intersecting with " + this.node);
-              return true;
-            } else {
-              return false;
-            }*/
         };
     }
     LaserLeague.CollisionDetector = CollisionDetector;
@@ -189,9 +179,6 @@ var LaserLeague;
         viewport;
         rotationSpeed = 90;
         deltaTime;
-        sceneGraph;
-        beams;
-        agents;
         constructor() {
             super();
             // Don't start when running in editor
@@ -200,7 +187,6 @@ var LaserLeague;
             // Listen to this component being added to or removed from a node
             this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
             this.addEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
-            this.addEventListener("rotationChangeEvent", this.hndRotationChangeEvent);
         }
         // Activate the functions of this component as response to events
         hndEvent = (_event) => {
@@ -216,8 +202,6 @@ var LaserLeague;
             }
         };
         start() {
-            this.beams = this.node.getChildren();
-            this.sceneGraph = FudgeCore.Project.resources["Graph|2021-10-13T12:42:15.134Z|58505"];
             ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, this.update);
         }
         update = (_event) => {
@@ -232,6 +216,7 @@ var LaserLeague;
         };
         hndRotationChangeEvent(_event) {
             console.log("Rotation change event received by " + _event.currentTarget);
+            //console.log(this.node.name);
         }
     }
     LaserLeague.LaserRotator = LaserRotator;
@@ -241,20 +226,18 @@ var LaserLeague;
     var ƒ = FudgeCore;
     ƒ.Debug.info("Main Program Template running!");
     let viewport;
-    //let lasertransforms: ƒ.Matrix4x4[];
     let agent;
     let copyLaser;
     let graph;
     let agents;
-    //let gameManager: GameManager;
     let lasers;
+    //const event = new CustomEvent('build', { detail: {graph, lasers} }); //Example event with custom data
     let ctrlForward = new ƒ.Control("Forward", 1, 0 /* PROPORTIONAL */);
     ctrlForward.setDelay(200);
     let ctrlRotation = new ƒ.Control("Rotation", 1, 0 /* PROPORTIONAL */);
     ctrlRotation.setDelay(200);
     let agentMoveSpeedFactor = 10;
     let deltaTime;
-    //let agentMoveDirection: number = 0;
     window.addEventListener("load", init);
     function init(_event) {
         let dialog = document.querySelector("dialog");
@@ -281,7 +264,7 @@ var LaserLeague;
         graph = viewport.getBranch();
         ƒ.AudioManager.default.listenTo(graph);
         ƒ.AudioManager.default.listenWith(graph.getComponent(ƒ.ComponentAudioListener));
-        graph.addEventListener("collisionEvent", hndCollisionEvent);
+        graph.addEventListener("collisionEvent", hndCollisionEvent, false);
         let graphLaser = FudgeCore.Project.resources["Graph|2021-11-15T14:16:57.937Z|42317"];
         console.log(FudgeCore.Project.resources);
         agent = graph.getChildrenByName("Agents")[0].getChildrenByName("Agent_1")[0];
@@ -292,7 +275,7 @@ var LaserLeague;
                 graph.getChildrenByName("Lasers")[0].addChild(copyLaser);
                 copyLaser.mtxLocal.translateX(-10 + i * 10);
                 copyLaser.mtxLocal.translateY(-4 + j * 8);
-                //copyLaser.addEventListener("rotationChangeEvent", copyLaser.getComponent(LaserRotator).hndRotationChangeEvent);
+                copyLaser.addEventListener("rotationChangeEvent", copyLaser.getComponent(LaserLeague.LaserRotator).hndRotationChangeEvent, true);
                 if (j >= 1) {
                     copyLaser.getComponent(LaserLeague.LaserRotator).rotationSpeed *= -1;
                 }
@@ -300,8 +283,6 @@ var LaserLeague;
         }
         agent = new LaserLeague.Agent();
         graph.getChildrenByName("Agents")[0].addChild(agent);
-        //gameManager = GameManager.getInstance();
-        //gameManager.start();
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
