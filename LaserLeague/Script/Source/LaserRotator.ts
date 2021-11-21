@@ -8,10 +8,12 @@ namespace LaserLeague {
     // Properties may be mutated by users in the editor via the automatically created user interface
     public message: string = "LaserRotator added to ";
 
-    public viewport: ƒ.Viewport;
+  
 
     public rotationSpeed: number = 90;
     public deltaTime: number;
+
+    public sceneGraph: ƒ.Node;
 
     constructor() {
       super();
@@ -33,16 +35,20 @@ namespace LaserLeague {
       switch (_event.type) {
         case ƒ.EVENT.COMPONENT_ADD:
           ƒ.Debug.log(this.message, this.node);
+          this.node.addEventListener("rotationChangeEvent", this.hndRotationChangeEvent, true);
           this.start();
           break;
         case ƒ.EVENT.COMPONENT_REMOVE:
           this.removeEventListener(ƒ.EVENT.COMPONENT_ADD, this.hndEvent);
           this.removeEventListener(ƒ.EVENT.COMPONENT_REMOVE, this.hndEvent);
+          this.node.removeEventListener("rotationChangeEvent", this.hndRotationChangeEvent, true);
+          ƒ.Loop.removeEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
           break;
       }
     }
 
     public start (): void  {
+      this.sceneGraph = viewport.getBranch();
       ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
 
     }
@@ -59,8 +65,15 @@ namespace LaserLeague {
       
     }
 
-    public hndRotationChangeEvent(_event: Event): void {
-      console.log("Rotation change event received by " + _event.currentTarget);
+    public hndRotationChangeEvent = (_event: Event): void => {
+      this.rotationSpeed *= -1;
+      let counter: number = 0;
+      this.node.getChildren().forEach(element => {
+        console.log(counter);
+        console.log(element.name);
+        counter ++;
+      });
+      console.log("Rotation change event received by ", this.node.name);
       //console.log(this.node.name);
     }
 

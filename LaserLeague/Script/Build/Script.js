@@ -176,9 +176,9 @@ var LaserLeague;
         static iSubclass = ƒ.Component.registerSubclass(LaserRotator);
         // Properties may be mutated by users in the editor via the automatically created user interface
         message = "LaserRotator added to ";
-        viewport;
         rotationSpeed = 90;
         deltaTime;
+        sceneGraph;
         constructor() {
             super();
             // Don't start when running in editor
@@ -193,15 +193,19 @@ var LaserLeague;
             switch (_event.type) {
                 case "componentAdd" /* COMPONENT_ADD */:
                     ƒ.Debug.log(this.message, this.node);
+                    this.node.addEventListener("rotationChangeEvent", this.hndRotationChangeEvent, true);
                     this.start();
                     break;
                 case "componentRemove" /* COMPONENT_REMOVE */:
                     this.removeEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
                     this.removeEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
+                    this.node.removeEventListener("rotationChangeEvent", this.hndRotationChangeEvent, true);
+                    ƒ.Loop.removeEventListener("loopFrame" /* LOOP_FRAME */, this.update);
                     break;
             }
         };
         start() {
+            this.sceneGraph = LaserLeague.viewport.getBranch();
             ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, this.update);
         }
         update = (_event) => {
@@ -214,10 +218,17 @@ var LaserLeague;
               });
             });*/
         };
-        hndRotationChangeEvent(_event) {
-            console.log("Rotation change event received by " + _event.currentTarget);
+        hndRotationChangeEvent = (_event) => {
+            this.rotationSpeed *= -1;
+            let counter = 0;
+            this.node.getChildren().forEach(element => {
+                console.log(counter);
+                console.log(element.name);
+                counter++;
+            });
+            console.log("Rotation change event received by ", this.node.name);
             //console.log(this.node.name);
-        }
+        };
     }
     LaserLeague.LaserRotator = LaserRotator;
 })(LaserLeague || (LaserLeague = {}));
@@ -225,10 +236,9 @@ var LaserLeague;
 (function (LaserLeague) {
     var ƒ = FudgeCore;
     ƒ.Debug.info("Main Program Template running!");
-    let viewport;
     let agent;
     let copyLaser;
-    let graph;
+    let sceneGraph;
     let agents;
     let lasers;
     //const event = new CustomEvent('build', { detail: {graph, lasers} }); //Example event with custom data
@@ -252,43 +262,43 @@ var LaserLeague;
     }
     async function start() {
         await ƒ.Project.loadResourcesFromHTML();
-        graph = ƒ.Project.resources["Graph|2021-10-13T12:42:15.134Z|58505"];
+        sceneGraph = ƒ.Project.resources["Graph|2021-10-13T12:42:15.134Z|58505"];
         // setup Camera
         let cmpCamera = new ƒ.ComponentCamera();
         cmpCamera.mtxPivot.rotateY(180);
         cmpCamera.mtxPivot.translateZ(-35);
-        graph.addComponent(cmpCamera);
+        sceneGraph.addComponent(cmpCamera);
         let canvas = document.querySelector("canvas");
-        viewport = new ƒ.Viewport();
-        viewport.initialize("Viewport", graph, cmpCamera, canvas);
-        graph = viewport.getBranch();
-        ƒ.AudioManager.default.listenTo(graph);
-        ƒ.AudioManager.default.listenWith(graph.getComponent(ƒ.ComponentAudioListener));
-        graph.addEventListener("collisionEvent", hndCollisionEvent, false);
+        LaserLeague.viewport = new ƒ.Viewport();
+        LaserLeague.viewport.initialize("Viewport", sceneGraph, cmpCamera, canvas);
+        sceneGraph = LaserLeague.viewport.getBranch();
+        ƒ.AudioManager.default.listenTo(sceneGraph);
+        ƒ.AudioManager.default.listenWith(sceneGraph.getComponent(ƒ.ComponentAudioListener));
+        sceneGraph.addEventListener("collisionEvent", hndCollisionEvent, false);
         let graphLaser = FudgeCore.Project.resources["Graph|2021-11-15T14:16:57.937Z|42317"];
         console.log(FudgeCore.Project.resources);
-        agent = graph.getChildrenByName("Agents")[0].getChildrenByName("Agent_1")[0];
+        agent = sceneGraph.getChildrenByName("Agents")[0].getChildrenByName("Agent_1")[0];
         console.log("Copy", copyLaser);
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 2; j++) {
                 copyLaser = await ƒ.Project.createGraphInstance(graphLaser);
-                graph.getChildrenByName("Lasers")[0].addChild(copyLaser);
+                sceneGraph.getChildrenByName("Lasers")[0].addChild(copyLaser);
                 copyLaser.mtxLocal.translateX(-10 + i * 10);
                 copyLaser.mtxLocal.translateY(-4 + j * 8);
-                copyLaser.addEventListener("rotationChangeEvent", copyLaser.getComponent(LaserLeague.LaserRotator).hndRotationChangeEvent, true);
+                //copyLaser.addEventListener("rotationChangeEvent", copyLaser.getComponent(LaserRotator).hndRotationChangeEvent, true);
                 if (j >= 1) {
                     copyLaser.getComponent(LaserLeague.LaserRotator).rotationSpeed *= -1;
                 }
             }
         }
         agent = new LaserLeague.Agent();
-        graph.getChildrenByName("Agents")[0].addChild(agent);
+        sceneGraph.getChildrenByName("Agents")[0].addChild(agent);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
     function update(_event) {
         // ƒ.Physics.world.simulate();  // if physics is included and used
-        viewport.draw();
+        LaserLeague.viewport.draw();
         deltaTime = ƒ.Loop.timeFrameReal / 1000; //equivalent to unity deltaTime
         ƒ.AudioManager.default.update();
         //movementcontrol
@@ -300,8 +310,8 @@ var LaserLeague;
             + (ƒ.Keyboard.mapToValue(1, 0, [ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT]));
         ctrlRotation.setInput(inputrotationvalue);
         agent.mtxLocal.rotateZ(ctrlRotation.getOutput() * deltaTime * 360);
-        agents = graph.getChildrenByName("Agents")[0].getChildren();
-        lasers = graph.getChildrenByName("Lasers")[0].getChildren();
+        agents = sceneGraph.getChildrenByName("Agents")[0].getChildren();
+        lasers = sceneGraph.getChildrenByName("Lasers")[0].getChildren();
         //console.log(lasers.length);
         let beams;
         lasers.forEach(laser => {
@@ -311,8 +321,9 @@ var LaserLeague;
                     if (beam.getComponent(LaserLeague.CollisionDetector).checkCollision(agent)) {
                         console.log(agent.name + " you dead!");
                         agent.mtxLocal.translation = new ƒ.Vector3(0, 0, 1);
-                        let dieSound = graph.getComponents(ƒ.ComponentAudio)[1];
+                        let dieSound = sceneGraph.getComponents(ƒ.ComponentAudio)[1];
                         dieSound.play(true);
+                        //sceneGraph.broadcastEvent(new CustomEvent("rotationChangeEvent"));
                     }
                 });
             });
@@ -339,7 +350,7 @@ var LaserLeague;
     }
     function hndCollisionEvent(_event) {
         console.log("Collision event received by", _event.currentTarget);
-        graph.broadcastEvent(new CustomEvent("rotationChangeEvent"));
+        sceneGraph.broadcastEvent(new CustomEvent("rotationChangeEvent"));
     }
 })(LaserLeague || (LaserLeague = {}));
 //# sourceMappingURL=Script.js.map

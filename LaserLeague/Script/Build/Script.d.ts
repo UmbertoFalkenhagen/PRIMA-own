@@ -50,15 +50,17 @@ declare namespace LaserLeague {
     class LaserRotator extends ƒ.ComponentScript {
         static readonly iSubclass: number;
         message: string;
-        viewport: ƒ.Viewport;
         rotationSpeed: number;
         deltaTime: number;
+        sceneGraph: ƒ.Node;
         constructor();
         hndEvent: (_event: Event) => void;
         start(): void;
         update: (_event: Event) => void;
-        hndRotationChangeEvent(_event: Event): void;
+        hndRotationChangeEvent: (_event: Event) => void;
     }
 }
 declare namespace LaserLeague {
+    import ƒ = FudgeCore;
+    let viewport: ƒ.Viewport;
 }
