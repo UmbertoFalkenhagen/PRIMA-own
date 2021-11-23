@@ -40,6 +40,13 @@
       }
     }
   },
+  "MeshRelief|2021-11-18T15:11:27.949Z|40298": {
+    "ƒ.MeshRelief": {
+      "idResource": "MeshRelief|2021-11-18T15:11:27.949Z|40298",
+      "name": "MeshRelief",
+      "type": "MeshRelief"
+    }
+  },
   "Graph|2021-11-18T14:33:59.117Z|18376": {
     "ƒ.Graph": {
       "name": "SceneGraph",
@@ -111,59 +118,12 @@
                     }
                   }
                 }
-              ]
-            },
-            "children": []
-          }
-        },
-        {
-          "ƒ.Node": {
-            "name": "Agent",
-            "components": {
-              "ComponentMesh": [
-                {
-                  "ƒ.ComponentMesh": {
-                    "idMesh": "MeshCube|2021-11-18T14:46:00.613Z|28907",
-                    "pivot": {
-                      "translation": "[0, 0, 0]",
-                      "rotation": "[0, 0, 0]",
-                      "scaling": "[1, 1, 2]"
-                    },
-                    "Component": {
-                      "active": true
-                    }
-                  }
-                }
               ],
-              "ComponentMaterial": [
+              "HeightMapGenerator": [
                 {
-                  "ƒ.ComponentMaterial": {
-                    "sortForAlpha": false,
-                    "clrPrimary": "[1, 1, 1, 1]",
-                    "clrSecondary": "[1, 1, 1, 1]",
-                    "pivot": {
-                      "translation": "[0, 0]",
-                      "rotation": 0,
-                      "scaling": "[1, 1]"
-                    },
-                    "Component": {
-                      "active": true
-                    },
-                    "idMaterial": "Material|2021-11-18T14:46:25.942Z|42737"
-                  }
-                }
-              ],
-              "ComponentTransform": [
-                {
-                  "ƒ.ComponentTransform": {
-                    "local": {
-                      "translation": "[0, 0, 0]",
-                      "rotation": "[0, 0, 0]",
-                      "scaling": "[1, 1, 1]"
-                    },
-                    "Component": {
-                      "active": true
-                    }
+                  "MarioKart.HeightMapGenerator": {
+                    "active": true,
+                    "message": "HeightMapGenerator added to "
                   }
                 }
               ]
@@ -176,11 +136,72 @@
       "type": "Graph"
     }
   },
-  "MeshRelief|2021-11-18T15:11:27.949Z|40298": {
-    "ƒ.MeshRelief": {
-      "idResource": "MeshRelief|2021-11-18T15:11:27.949Z|40298",
-      "name": "MeshRelief",
-      "type": "MeshRelief"
+  "Graph|2021-11-22T11:02:19.072Z|64411": {
+    "ƒ.Graph": {
+      "name": "Agent",
+      "components": {
+        "ComponentMesh": [
+          {
+            "ƒ.ComponentMesh": {
+              "idMesh": "MeshCube|2021-11-18T14:46:00.613Z|28907",
+              "pivot": {
+                "translation": "[0, 0, 0]",
+                "rotation": "[0, 0, 0]",
+                "scaling": "[1, 1, 2]"
+              },
+              "Component": {
+                "active": true
+              }
+            }
+          }
+        ],
+        "ComponentMaterial": [
+          {
+            "ƒ.ComponentMaterial": {
+              "sortForAlpha": false,
+              "clrPrimary": "[1, 1, 1, 1]",
+              "clrSecondary": "[1, 1, 1, 1]",
+              "pivot": {
+                "translation": "[0, 0]",
+                "rotation": 0,
+                "scaling": "[1, 1]"
+              },
+              "Component": {
+                "active": true
+              },
+              "idMaterial": "Material|2021-11-18T14:46:25.942Z|42737"
+            }
+          }
+        ],
+        "ComponentTransform": [
+          {
+            "ƒ.ComponentTransform": {
+              "local": {
+                "translation": "[0, 0, 0]",
+                "rotation": "[0, 0, 0]",
+                "scaling": "[1, 1, 1]"
+              },
+              "Component": {
+                "active": true
+              }
+            }
+          }
+        ]
+      },
+      "children": [],
+      "idResource": "Graph|2021-11-22T11:02:19.072Z|64411",
+      "type": "Graph"
+    }
+  },
+  "TextureImage|2021-11-23T10:35:25.413Z|13750": {
+    "ƒ.TextureImage": {
+      "url": "Script\\Textures\\heightmap_3.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2021-11-23T10:35:25.413Z|13750",
+        "name": "Script\\Textures\\heightmap_3.png",
+        "mipmap": "CRISP"
+      }
     }
   }
 }
