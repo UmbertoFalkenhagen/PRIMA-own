@@ -43,6 +43,8 @@ var MarioKart;
         message = "HeightMapGenerator added to ";
         heightMapSource;
         reliefMesh;
+        map = new ƒ.Node("ownTarrain");
+        graph = ƒ.Project.resources["Graph|2021-11-18T14:33:59.117Z|18376"];
         constructor() {
             super();
             // Don't start when running in editor
@@ -80,7 +82,21 @@ var MarioKart;
               const element = array[index];
               
             }*/
-            this.reliefMesh = new ƒ.MeshRelief("HeightMap", this.heightMapSource);
+            //let cmpRigidbody: ƒ.ComponentRigidbody = new ƒ.ComponentRigidbody(1, ƒ.BODY_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE);
+            let mtrTexFlat = ƒ.Project.resources["Material|2021-11-23T02:36:34.207Z|12139"];
+            let material = new ƒ.ComponentMaterial(mtrTexFlat);
+            let gridMeshFlat = new ƒ.MeshRelief("HeightMap", this.heightMapSource);
+            let grid = new ƒ.ComponentMesh(gridMeshFlat);
+            console.log(grid);
+            grid.mtxPivot.scale(new ƒ.Vector3(100, 10, 100));
+            grid.mtxPivot.translateY(-grid.mesh.boundingBox.max.y);
+            let transfom = new ƒ.ComponentTransform();
+            this.map.addComponent(grid);
+            this.map.addComponent(material);
+            //this.map.addComponent(cmpRigidbody);
+            this.map.addComponent(transfom);
+            this.graph.addChild(this.map);
+            //this.reliefMesh = new ƒ.MeshRelief("HeightMap", this.heightMapSource);
         }
     }
     MarioKart.HeightMapGenerator = HeightMapGenerator;
@@ -91,6 +107,13 @@ var MarioKart;
     ƒ.Debug.info("Main Program Template running!");
     let viewport;
     let sceneGraph;
+    let kart;
+    let ctrForward = new ƒ.Control("Forward", 10, 0 /* PROPORTIONAL */);
+    ctrForward.setDelay(200);
+    let ctrTurn = new ƒ.Control("Forward", 100, 0 /* PROPORTIONAL */);
+    ctrTurn.setDelay(50);
+    let mtxTerrain;
+    let meshTerrain;
     window.addEventListener("load", init);
     function init(_event) {
         let dialog = document.querySelector("dialog");
@@ -112,24 +135,47 @@ var MarioKart;
         viewport = new ƒ.Viewport();
         viewport.initialize("Viewport", sceneGraph, cmpCamera, canvas);
         sceneGraph = viewport.getBranch();
-        console.log(sceneGraph);
-        sceneGraph.addComponent(cmpCamera);
+        viewport.calculateTransforms();
+        let cmpMeshTerrain = viewport.getBranch().getChildrenByName("Terrain")[0].getComponent(ƒ.ComponentMesh);
+        meshTerrain = cmpMeshTerrain.mesh;
+        mtxTerrain = cmpMeshTerrain.mtxWorld;
+        //console.log(sceneGraph);
         ƒ.AudioManager.default.listenTo(sceneGraph);
         ƒ.AudioManager.default.listenWith(sceneGraph.getComponent(ƒ.ComponentAudioListener));
         ƒ.AudioManager.default.listenTo(sceneGraph);
         ƒ.AudioManager.default.listenWith(sceneGraph.getComponent(ƒ.ComponentAudioListener));
-        let kart = ƒ.Project.resources["Graph|2021-11-22T11:02:19.072Z|64411"];
+        kart = ƒ.Project.resources["Graph|2021-11-22T11:02:19.072Z|64411"];
         //kart.mtxLocal.translateX(5);
         sceneGraph.appendChild(kart);
-        cmpCamera.mtxPivot.translateZ(100);
-        cmpCamera.mtxPivot.translateY(100);
-        cmpCamera.mtxPivot.rotateY(180);
-        cmpCamera.mtxPivot.rotateX(45);
+        let kartTransform = kart.getComponent(ƒ.ComponentTransform);
+        kartTransform.mtxLocal.translateX(35);
+        kartTransform.mtxLocal.translateY(5);
+        kartTransform.mtxLocal.translateZ(45);
+        kartTransform.mtxLocal.rotateY(-90);
+        let cameraNode = new ƒ.Node("cameraNode");
+        cameraNode.addComponent(cmpCamera);
+        cameraNode.addComponent(new ƒ.ComponentTransform);
+        kart.addChild(cameraNode);
+        //kart.addComponent(cmpCamera);
+        cameraNode.getComponent(ƒ.ComponentTransform).mtxLocal.translateZ(-20);
+        cameraNode.getComponent(ƒ.ComponentTransform).mtxLocal.translateY(10);
+        cameraNode.getComponent(ƒ.ComponentTransform).mtxLocal.rotateY(360);
+        cameraNode.getComponent(ƒ.ComponentTransform).mtxLocal.rotateX(20);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
     function update(_event) {
         // ƒ.Physics.world.simulate();  // if physics is included and used
+        let deltaTime = ƒ.Loop.timeFrameReal / 1000;
+        let turn = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT], [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]);
+        ctrTurn.setInput(turn);
+        kart.mtxLocal.rotateY(ctrTurn.getOutput() * deltaTime);
+        let forward = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP], [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]);
+        ctrForward.setInput(forward);
+        kart.mtxLocal.translateZ(ctrForward.getOutput() * deltaTime);
+        let terrainInfo = meshTerrain.getTerrainInfo(kart.mtxLocal.translation, mtxTerrain);
+        kart.mtxLocal.translation = terrainInfo.position;
+        kart.mtxLocal.showTo(ƒ.Vector3.SUM(terrainInfo.position, kart.mtxLocal.getZ()), terrainInfo.normal);
         viewport.draw();
         ƒ.AudioManager.default.update();
     }

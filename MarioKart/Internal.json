@@ -47,30 +47,58 @@
       "type": "MeshRelief"
     }
   },
+  "Material|2021-11-23T13:51:58.016Z|48710": {
+    "ƒ.Material": {
+      "name": "mtrMap",
+      "idResource": "Material|2021-11-23T13:51:58.016Z|48710",
+      "shader": "ShaderTextureFlat",
+      "coat": {
+        "ƒ.CoatTextured": {
+          "color": "[0.9803921568627451, 0.9803921568627451, 0.9803921568627451, 1]",
+          "idTexture": "TextureImage|2021-11-23T14:00:36.152Z|53493"
+        }
+      }
+    }
+  },
+  "TextureImage|2021-11-23T14:00:36.152Z|53493": {
+    "ƒ.TextureImage": {
+      "url": "Script\\Textures\\maptex.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2021-11-23T14:00:36.152Z|53493",
+        "name": "Script\\Textures\\maptex.png",
+        "mipmap": "CRISP"
+      }
+    }
+  },
   "Graph|2021-11-18T14:33:59.117Z|18376": {
     "ƒ.Graph": {
       "name": "SceneGraph",
-      "components": {},
+      "components": {
+        "ComponentAudio": [
+          {
+            "ƒ.ComponentAudio": {
+              "active": true,
+              "idResource": "Audio|2021-11-24T13:00:05.825Z|96501",
+              "playing": true,
+              "loop": true,
+              "volume": 1
+            }
+          }
+        ],
+        "ComponentAudioListener": [
+          {
+            "ƒ.ComponentAudioListener": {
+              "active": true
+            }
+          }
+        ]
+      },
       "children": [
         {
           "ƒ.Node": {
             "name": "Terrain",
             "components": {
-              "ComponentMesh": [
-                {
-                  "ƒ.ComponentMesh": {
-                    "idMesh": "MeshRelief|2021-11-18T15:11:27.949Z|40298",
-                    "pivot": {
-                      "translation": "[0, 0, 0]",
-                      "rotation": "[0, 0, 0]",
-                      "scaling": "[100, 3, 100]"
-                    },
-                    "Component": {
-                      "active": true
-                    }
-                  }
-                }
-              ],
               "ComponentMaterial": [
                 {
                   "ƒ.ComponentMaterial": {
@@ -85,7 +113,7 @@
                     "Component": {
                       "active": true
                     },
-                    "idMaterial": "Material|2021-11-18T14:35:53.531Z|25929"
+                    "idMaterial": "Material|2021-11-23T13:51:58.016Z|48710"
                   }
                 }
               ],
@@ -99,7 +127,7 @@
                     },
                     "light": {
                       "ƒ.LightAmbient": {
-                        "color": "[0.21568627450980393, 0.5647058823529412, 0.396078431372549, 0.55]"
+                        "color": "[0.3686274509803922, 0.3686274509803922, 0.3686274509803922, 1]"
                       }
                     }
                   }
@@ -113,17 +141,38 @@
                     },
                     "light": {
                       "ƒ.LightDirectional": {
-                        "color": "[0.8862745098039215, 1, 0.3215686274509804, 0.89]"
+                        "color": "[0.06666666666666667, 0.06666666666666667, 0.050980392156862744, 1]"
                       }
                     }
                   }
                 }
               ],
-              "HeightMapGenerator": [
+              "ComponentMesh": [
                 {
-                  "MarioKart.HeightMapGenerator": {
-                    "active": true,
-                    "message": "HeightMapGenerator added to "
+                  "ƒ.ComponentMesh": {
+                    "idMesh": "MeshTerrain|2021-11-18T14:30:59.382Z|36477",
+                    "pivot": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentTransform": [
+                {
+                  "ƒ.ComponentTransform": {
+                    "local": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[100, 6, 100]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
                   }
                 }
               ]
@@ -202,6 +251,33 @@
         "name": "Script\\Textures\\heightmap_3.png",
         "mipmap": "CRISP"
       }
+    }
+  },
+  "TextureImage|2021-11-23T13:47:39.450Z|59654": {
+    "ƒ.TextureImage": {
+      "url": "Script\\Textures\\map.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2021-11-23T13:47:39.450Z|59654",
+        "name": "Script\\Textures\\map.png",
+        "mipmap": "CRISP"
+      }
+    }
+  },
+  "MeshRelief|2021-11-23T13:47:43.230Z|04405": {
+    "ƒ.MeshRelief": {
+      "idResource": "MeshRelief|2021-11-23T13:47:43.230Z|04405",
+      "name": "MeshRelief",
+      "type": "MeshRelief",
+      "idTexture": "TextureImage|2021-11-23T13:47:39.450Z|59654"
+    }
+  },
+  "Audio|2021-11-24T13:00:05.825Z|96501": {
+    "ƒ.Audio": {
+      "url": "Script\\Sound\\2-03 GBA Mario Circuit.mp3",
+      "idResource": "Audio|2021-11-24T13:00:05.825Z|96501",
+      "name": "Script\\Sound\\2-03 GBA Mario Circuit.mp3",
+      "type": "Audio"
     }
   }
 }

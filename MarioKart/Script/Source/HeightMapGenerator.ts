@@ -9,6 +9,8 @@ namespace MarioKart {
     public message: string = "HeightMapGenerator added to ";
     public heightMapSource: ƒ.TextureImage;
     public reliefMesh: ƒ.MeshTerrain;
+    public map: ƒ.Node = new ƒ.Node("ownTarrain");
+    public graph: ƒ.Graph = <ƒ.Graph>ƒ.Project.resources["Graph|2021-11-18T14:33:59.117Z|18376"];
 
 
     constructor() {
@@ -58,8 +60,25 @@ namespace MarioKart {
         const element = array[index];
         
       }*/
+
+      //let cmpRigidbody: ƒ.ComponentRigidbody = new ƒ.ComponentRigidbody(1, ƒ.BODY_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE);
+
+      let mtrTexFlat: ƒ.Material = <ƒ.Material>ƒ.Project.resources["Material|2021-11-23T02:36:34.207Z|12139"];
+      let material: ƒ.ComponentMaterial = new ƒ.ComponentMaterial(mtrTexFlat);
+      let gridMeshFlat: ƒ.MeshTerrain = new ƒ.MeshRelief("HeightMap", this.heightMapSource);
+      let grid: ƒ.ComponentMesh = new ƒ.ComponentMesh(gridMeshFlat);
+      console.log(grid);
+      grid.mtxPivot.scale(new ƒ.Vector3(100, 10, 100));
+      grid.mtxPivot.translateY(-grid.mesh.boundingBox.max.y);
+
+      let transfom: ƒ.ComponentTransform = new ƒ.ComponentTransform();
+      this.map.addComponent(grid);
+      this.map.addComponent(material);
+      //this.map.addComponent(cmpRigidbody);
+      this.map.addComponent(transfom);
+      this.graph.addChild(this.map);
   
-      this.reliefMesh = new ƒ.MeshRelief("HeightMap", this.heightMapSource);
+      //this.reliefMesh = new ƒ.MeshRelief("HeightMap", this.heightMapSource);
     }
 
     // protected reduceMutator(_mutator: ƒ.Mutator): void {

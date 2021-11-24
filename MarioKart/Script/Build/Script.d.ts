@@ -14,6 +14,8 @@ declare namespace MarioKart {
         message: string;
         heightMapSource: ƒ.TextureImage;
         reliefMesh: ƒ.MeshTerrain;
+        map: ƒ.Node;
+        graph: ƒ.Graph;
         constructor();
         hndEvent: (_event: Event) => void;
         start(): void;
