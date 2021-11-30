@@ -38,9 +38,9 @@ var PhysicsTest;
     ƒ.Debug.info("Main Program Template running!");
     let viewport;
     let sceneGraph;
-    let ground;
-    let cart;
-    let cmpCart;
+    // let ground: ƒ.Node;
+    // let cart: ƒ.Node;
+    // let cmpCart: ƒ.ComponentRigidbody;
     window.addEventListener("load", init);
     function init(_event) {
         let dialog = document.querySelector("dialog");
@@ -64,12 +64,13 @@ var PhysicsTest;
         ƒ.Physics.adjustTransforms(sceneGraph);
         ƒ.AudioManager.default.listenTo(sceneGraph);
         ƒ.AudioManager.default.listenWith(sceneGraph.getComponent(ƒ.ComponentAudioListener));
-        ground = sceneGraph.getChildrenByName("Ground")[0];
-        cart = sceneGraph.getChildrenByName("Cart")[0];
-        ground.addComponent(new ƒ.ComponentRigidbody(1, ƒ.BODY_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.COLLISION_GROUP.GROUP_1));
-        cmpCart = new ƒ.ComponentRigidbody(80, ƒ.BODY_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.CAPSULE, ƒ.COLLISION_GROUP.DEFAULT);
-        cmpCart.restitution = 0;
-        cart.addComponent(cmpCart);
+        // ground = sceneGraph.getChildrenByName("Ground")[0];
+        // cart = sceneGraph.getChildrenByName("Cart")[0];
+        // ground.addComponent(new ƒ.ComponentRigidbody(1, ƒ.BODY_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.COLLISION_GROUP.GROUP_1));
+        // ground.getComponent(ƒ.ComponentRigidbody).restitution = 0;
+        // cmpCart = new ƒ.ComponentRigidbody(80, ƒ.BODY_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.CAPSULE, ƒ.COLLISION_GROUP.DEFAULT);
+        // cmpCart.restitution = 0;
+        // cart.addComponent(cmpCart); 
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
