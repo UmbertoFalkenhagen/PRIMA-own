@@ -108,6 +108,7 @@ var MarioKart;
     let viewport;
     let sceneGraph;
     let kart;
+    let cameraNode;
     let ctrForward = new ƒ.Control("Forward", 10, 0 /* PROPORTIONAL */);
     ctrForward.setDelay(200);
     let ctrTurn = new ƒ.Control("Forward", 100, 0 /* PROPORTIONAL */);
@@ -118,7 +119,7 @@ var MarioKart;
     function init(_event) {
         let dialog = document.querySelector("dialog");
         dialog.querySelector("h1").textContent = document.title;
-        dialog.addEventListener("click", function (_event) {
+        dialog.addEventListener("click", (_event) => {
             // @ts-ignore until HTMLDialog is implemented by all browsers and available in dom.d.ts
             dialog.close();
             start();
@@ -152,15 +153,17 @@ var MarioKart;
         kartTransform.mtxLocal.translateY(5);
         kartTransform.mtxLocal.translateZ(45);
         kartTransform.mtxLocal.rotateY(-90);
-        let cameraNode = new ƒ.Node("cameraNode");
+        cmpCamera.mtxPivot.translation = new ƒ.Vector3(0, 8, -12);
+        cmpCamera.mtxPivot.rotation = new ƒ.Vector3(25, 0, 0);
+        cameraNode = new ƒ.Node("cameraNode");
         cameraNode.addComponent(cmpCamera);
         cameraNode.addComponent(new ƒ.ComponentTransform);
-        kart.addChild(cameraNode);
+        sceneGraph.addChild(cameraNode);
         //kart.addComponent(cmpCamera);
-        cameraNode.getComponent(ƒ.ComponentTransform).mtxLocal.translateZ(-20);
-        cameraNode.getComponent(ƒ.ComponentTransform).mtxLocal.translateY(10);
-        cameraNode.getComponent(ƒ.ComponentTransform).mtxLocal.rotateY(360);
-        cameraNode.getComponent(ƒ.ComponentTransform).mtxLocal.rotateX(20);
+        // cameraNode.getComponent(ƒ.ComponentTransform).mtxLocal.translateZ(-20);
+        // cameraNode.getComponent(ƒ.ComponentTransform).mtxLocal.translateY(10);
+        // cameraNode.getComponent(ƒ.ComponentTransform).mtxLocal.rotateY(360);
+        // cameraNode.getComponent(ƒ.ComponentTransform).mtxLocal.rotateX(20);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
@@ -176,8 +179,15 @@ var MarioKart;
         let terrainInfo = meshTerrain.getTerrainInfo(kart.mtxLocal.translation, mtxTerrain);
         kart.mtxLocal.translation = terrainInfo.position;
         kart.mtxLocal.showTo(ƒ.Vector3.SUM(terrainInfo.position, kart.mtxLocal.getZ()), terrainInfo.normal);
+        placeCameraOnCart();
         viewport.draw();
         ƒ.AudioManager.default.update();
+    }
+    function placeCameraOnCart() {
+        cameraNode.mtxLocal.mutate({
+            translation: kart.mtxWorld.translation,
+            rotation: new ƒ.Vector3(0, kart.mtxWorld.rotation.y, 0)
+        });
     }
 })(MarioKart || (MarioKart = {}));
 //# sourceMappingURL=Script.js.map
