@@ -1,1 +1,279 @@
-{}
+{
+  "MeshCube|2021-11-30T11:23:37.945Z|11950": {
+    "ƒ.MeshCube": {
+      "idResource": "MeshCube|2021-11-30T11:23:37.945Z|11950",
+      "name": "meshCartBody",
+      "type": "MeshCube"
+    }
+  },
+  "Material|2021-11-30T11:25:35.607Z|35943": {
+    "ƒ.Material": {
+      "name": "mtrCart",
+      "idResource": "Material|2021-11-30T11:25:35.607Z|35943",
+      "shader": "ShaderTextureFlat",
+      "coat": {
+        "ƒ.CoatTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2021-11-30T11:27:07.610Z|17347"
+        }
+      }
+    }
+  },
+  "TextureImage|2021-11-30T11:27:07.610Z|17347": {
+    "ƒ.TextureImage": {
+      "url": "Script\\Textures\\istockphoto-1263572009-612x612.jpg",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2021-11-30T11:27:07.610Z|17347",
+        "name": "Script\\Textures\\istockphoto-1263572009-612x612.jpg",
+        "mipmap": "CRISP"
+      }
+    }
+  },
+  "MeshPyramid|2021-11-30T11:24:53.333Z|58371": {
+    "ƒ.MeshPyramid": {
+      "idResource": "MeshPyramid|2021-11-30T11:24:53.333Z|58371",
+      "name": "meshCartFront",
+      "type": "MeshPyramid"
+    }
+  },
+  "MeshCube|2021-11-30T12:20:12.708Z|83006": {
+    "ƒ.MeshCube": {
+      "idResource": "MeshCube|2021-11-30T12:20:12.708Z|83006",
+      "name": "meshGround",
+      "type": "MeshCube"
+    }
+  },
+  "Material|2021-11-30T12:21:21.079Z|08168": {
+    "ƒ.Material": {
+      "name": "mtrGround",
+      "idResource": "Material|2021-11-30T12:21:21.079Z|08168",
+      "shader": "ShaderTextureFlat",
+      "coat": {
+        "ƒ.CoatTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2021-11-30T12:23:17.990Z|57825"
+        }
+      }
+    }
+  },
+  "TextureImage|2021-11-30T12:23:17.990Z|57825": {
+    "ƒ.TextureImage": {
+      "url": "Script\\Textures\\thumb2-4k-asphalt-texture-road-black-stone-background-macro.jpg",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2021-11-30T12:23:17.990Z|57825",
+        "name": "Script\\Textures\\thumb2-4k-asphalt-texture-road-black-stone-background-macro.jpg",
+        "mipmap": "CRISP"
+      }
+    }
+  },
+  "Graph|2021-11-30T11:23:11.948Z|51069": {
+    "ƒ.Graph": {
+      "name": "SceneGraph",
+      "components": {
+        "ComponentLight": [
+          {
+            "ƒ.ComponentLight": {
+              "pivot": {
+                "translation": "[0, 0, 0]",
+                "rotation": "[0, 0, 0]",
+                "scaling": "[1, 1, 1]"
+              },
+              "light": {
+                "ƒ.LightAmbient": {
+                  "color": "[0.30980392156862746, 0.30980392156862746, 0.30980392156862746, 1]"
+                }
+              }
+            }
+          },
+          {
+            "ƒ.ComponentLight": {
+              "pivot": {
+                "translation": "[0, 10, 0]",
+                "rotation": "[40, 0, 0]",
+                "scaling": "[1, 1, 1]"
+              },
+              "light": {
+                "ƒ.LightDirectional": {
+                  "color": "[0.788235294117647, 0.788235294117647, 0.788235294117647, 1]"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "children": [
+        {
+          "ƒ.Node": {
+            "name": "Cart",
+            "components": {
+              "ComponentTransform": [
+                {
+                  "ƒ.ComponentTransform": {
+                    "local": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentMesh": [
+                {
+                  "ƒ.ComponentMesh": {
+                    "idMesh": "MeshCube|2021-11-30T11:23:37.945Z|11950",
+                    "pivot": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentMaterial": [
+                {
+                  "ƒ.ComponentMaterial": {
+                    "sortForAlpha": false,
+                    "clrPrimary": "[1, 1, 1, 1]",
+                    "clrSecondary": "[1, 1, 1, 1]",
+                    "pivot": {
+                      "translation": "[0, 0]",
+                      "rotation": 0,
+                      "scaling": "[1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    },
+                    "idMaterial": "Material|2021-11-30T11:25:35.607Z|35943"
+                  }
+                }
+              ]
+            },
+            "children": [
+              {
+                "ƒ.Node": {
+                  "name": "CartFront",
+                  "components": {
+                    "ComponentMesh": [
+                      {
+                        "ƒ.ComponentMesh": {
+                          "idMesh": "MeshPyramid|2021-11-30T11:24:53.333Z|58371",
+                          "pivot": {
+                            "translation": "[0.5, 0, 0]",
+                            "rotation": "[0, 0, -90]",
+                            "scaling": "[1, 1, 1]"
+                          },
+                          "Component": {
+                            "active": true
+                          }
+                        }
+                      }
+                    ],
+                    "ComponentMaterial": [
+                      {
+                        "ƒ.ComponentMaterial": {
+                          "sortForAlpha": false,
+                          "clrPrimary": "[1, 1, 1, 1]",
+                          "clrSecondary": "[1, 1, 1, 1]",
+                          "pivot": {
+                            "translation": "[0, 0]",
+                            "rotation": 0,
+                            "scaling": "[1, 1]"
+                          },
+                          "Component": {
+                            "active": true
+                          },
+                          "idMaterial": "Material|2021-11-30T11:25:35.607Z|35943"
+                        }
+                      }
+                    ],
+                    "ComponentTransform": [
+                      {
+                        "ƒ.ComponentTransform": {
+                          "local": {
+                            "translation": "[0, 0, 0]",
+                            "rotation": "[0, 0, 0]",
+                            "scaling": "[1, 1, 1]"
+                          },
+                          "Component": {
+                            "active": true
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "children": []
+                }
+              }
+            ]
+          }
+        },
+        {
+          "ƒ.GraphInstance": {
+            "name": "Ground",
+            "components": {
+              "ComponentTransform": [
+                {
+                  "ƒ.ComponentTransform": {
+                    "local": {
+                      "translation": "[0, -0.5999999046325684, 0]",
+                      "rotation": "[90, 0, 0]",
+                      "scaling": "[10, 10, 0.20000000298023224]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentMesh": [
+                {
+                  "ƒ.ComponentMesh": {
+                    "idMesh": "MeshCube|2021-11-30T12:20:12.708Z|83006",
+                    "pivot": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentMaterial": [
+                {
+                  "ƒ.ComponentMaterial": {
+                    "sortForAlpha": false,
+                    "clrPrimary": "[1, 1, 1, 1]",
+                    "clrSecondary": "[1, 1, 1, 1]",
+                    "pivot": {
+                      "translation": "[0, 0]",
+                      "rotation": 0,
+                      "scaling": "[1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    },
+                    "idMaterial": "Material|2021-11-30T12:21:21.079Z|08168"
+                  }
+                }
+              ]
+            },
+            "children": [],
+            "idSource": "Graph|2021-11-30T12:46:50.896Z|44595"
+          }
+        }
+      ],
+      "idResource": "Graph|2021-11-30T11:23:11.948Z|51069",
+      "type": "Graph"
+    }
+  }
+}
