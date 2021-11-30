@@ -3,10 +3,16 @@ namespace PhysicsTest {
   ƒ.Debug.info("Main Program Template running!");
 
   let viewport: ƒ.Viewport;
-  let sceneGraph: ƒ.Node;
+  export let sceneGraph: ƒ.Node;
+
+  let ctrForward: ƒ.Control = new ƒ.Control("Forward", 10, ƒ.CONTROL_TYPE.PROPORTIONAL);
+  ctrForward.setDelay(200);
+  let ctrTurn: ƒ.Control = new ƒ.Control("Turn", 10, ƒ.CONTROL_TYPE.PROPORTIONAL);
+  ctrTurn.setDelay(50);
 
   // let ground: ƒ.Node;
-  // let cart: ƒ.Node;
+  let cart: ƒ.Node;
+  let cameraNode: ƒ.Node;
   // let cmpCart: ƒ.ComponentRigidbody;
 
   window.addEventListener("load", init);
@@ -40,7 +46,21 @@ namespace PhysicsTest {
     ƒ.AudioManager.default.listenWith(sceneGraph.getComponent(ƒ.ComponentAudioListener));
 
     // ground = sceneGraph.getChildrenByName("Ground")[0];
-    // cart = sceneGraph.getChildrenByName("Cart")[0];
+    cart = sceneGraph.getChildrenByName("Cart")[0];
+
+    let kartTransform: ƒ.ComponentTransform = cart.getComponent(ƒ.ComponentTransform);
+    // kartTransform.mtxLocal.translateX(35);
+    // kartTransform.mtxLocal.translateY(5);
+    // kartTransform.mtxLocal.translateZ(45);
+    kartTransform.mtxLocal.rotateY(-90);
+
+    cmpCamera.mtxPivot.translation = new ƒ.Vector3(0, 8, -12);
+    cmpCamera.mtxPivot.rotation = new ƒ.Vector3(25, 0, 0);
+    
+    cameraNode = new ƒ.Node("cameraNode");
+    cameraNode.addComponent(cmpCamera);
+    cameraNode.addComponent(new ƒ.ComponentTransform);
+    sceneGraph.addChild(cameraNode);
 
     // ground.addComponent(new ƒ.ComponentRigidbody(1, ƒ.BODY_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.COLLISION_GROUP.GROUP_1));
     // ground.getComponent(ƒ.ComponentRigidbody).restitution = 0;
@@ -54,7 +74,25 @@ namespace PhysicsTest {
 
   function update(_event: Event): void {
     ƒ.Physics.world.simulate(Math.min(0.1, ƒ.Loop.timeFrameReal / 1000));  // if physics is included and used
+    //let deltaTime: number = ƒ.Loop.timeFrameReal / 1000;
+    let turn: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT], [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]);
+    ctrTurn.setInput(turn);
+    cart.getComponent(ƒ.ComponentRigidbody).applyTorque(ƒ.Vector3.SCALE(ƒ.Vector3.Y(), ctrTurn.getOutput()));
+
+    let forward: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP], [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]);
+    ctrForward.setInput(forward);
+    cart.getComponent(ƒ.ComponentRigidbody).applyForce(ƒ.Vector3.SCALE(cart.mtxLocal.getZ(), ctrForward.getOutput()));
+
+    placeCameraOnCart();
+
     viewport.draw();
     ƒ.AudioManager.default.update();
+  }
+
+  function placeCameraOnCart(): void {
+    cameraNode.mtxLocal.mutate({
+      translation: cart.mtxWorld.translation,
+      rotation: new ƒ.Vector3(0, cart.mtxWorld.rotation.y, 0)
+    });
   }
 }

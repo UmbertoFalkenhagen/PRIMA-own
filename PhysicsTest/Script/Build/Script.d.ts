@@ -8,4 +8,6 @@ declare namespace Script {
     }
 }
 declare namespace PhysicsTest {
+    import ƒ = FudgeCore;
+    let sceneGraph: ƒ.Node;
 }

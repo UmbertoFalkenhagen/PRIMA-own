@@ -9,7 +9,7 @@ namespace MarioKart {
 
   let ctrForward: ƒ.Control = new ƒ.Control("Forward", 10, ƒ.CONTROL_TYPE.PROPORTIONAL);
   ctrForward.setDelay(200);
-  let ctrTurn: ƒ.Control = new ƒ.Control("Forward", 100, ƒ.CONTROL_TYPE.PROPORTIONAL);
+  let ctrTurn: ƒ.Control = new ƒ.Control("Turn", 10, ƒ.CONTROL_TYPE.PROPORTIONAL);
   ctrTurn.setDelay(50);
 
   let mtxTerrain: ƒ.Matrix4x4;

@@ -37,9 +37,13 @@ var PhysicsTest;
     var ƒ = FudgeCore;
     ƒ.Debug.info("Main Program Template running!");
     let viewport;
-    let sceneGraph;
+    let ctrForward = new ƒ.Control("Forward", 10, 0 /* PROPORTIONAL */);
+    ctrForward.setDelay(200);
+    let ctrTurn = new ƒ.Control("Turn", 10, 0 /* PROPORTIONAL */);
+    ctrTurn.setDelay(50);
     // let ground: ƒ.Node;
-    // let cart: ƒ.Node;
+    let cart;
+    let cameraNode;
     // let cmpCart: ƒ.ComponentRigidbody;
     window.addEventListener("load", init);
     function init(_event) {
@@ -55,17 +59,28 @@ var PhysicsTest;
     }
     async function start() {
         await ƒ.Project.loadResourcesFromHTML();
-        sceneGraph = ƒ.Project.resources["Graph|2021-11-30T11:23:11.948Z|51069"];
+        PhysicsTest.sceneGraph = ƒ.Project.resources["Graph|2021-11-30T11:23:11.948Z|51069"];
         let cmpCamera = new ƒ.ComponentCamera();
         let canvas = document.querySelector("canvas");
         viewport = new ƒ.Viewport();
-        viewport.initialize("Viewport", sceneGraph, cmpCamera, canvas);
-        sceneGraph = viewport.getBranch();
-        ƒ.Physics.adjustTransforms(sceneGraph);
-        ƒ.AudioManager.default.listenTo(sceneGraph);
-        ƒ.AudioManager.default.listenWith(sceneGraph.getComponent(ƒ.ComponentAudioListener));
+        viewport.initialize("Viewport", PhysicsTest.sceneGraph, cmpCamera, canvas);
+        PhysicsTest.sceneGraph = viewport.getBranch();
+        ƒ.Physics.adjustTransforms(PhysicsTest.sceneGraph);
+        ƒ.AudioManager.default.listenTo(PhysicsTest.sceneGraph);
+        ƒ.AudioManager.default.listenWith(PhysicsTest.sceneGraph.getComponent(ƒ.ComponentAudioListener));
         // ground = sceneGraph.getChildrenByName("Ground")[0];
-        // cart = sceneGraph.getChildrenByName("Cart")[0];
+        cart = PhysicsTest.sceneGraph.getChildrenByName("Cart")[0];
+        let kartTransform = cart.getComponent(ƒ.ComponentTransform);
+        // kartTransform.mtxLocal.translateX(35);
+        // kartTransform.mtxLocal.translateY(5);
+        // kartTransform.mtxLocal.translateZ(45);
+        kartTransform.mtxLocal.rotateY(-90);
+        cmpCamera.mtxPivot.translation = new ƒ.Vector3(0, 8, -12);
+        cmpCamera.mtxPivot.rotation = new ƒ.Vector3(25, 0, 0);
+        cameraNode = new ƒ.Node("cameraNode");
+        cameraNode.addComponent(cmpCamera);
+        cameraNode.addComponent(new ƒ.ComponentTransform);
+        PhysicsTest.sceneGraph.addChild(cameraNode);
         // ground.addComponent(new ƒ.ComponentRigidbody(1, ƒ.BODY_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.COLLISION_GROUP.GROUP_1));
         // ground.getComponent(ƒ.ComponentRigidbody).restitution = 0;
         // cmpCart = new ƒ.ComponentRigidbody(80, ƒ.BODY_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.CAPSULE, ƒ.COLLISION_GROUP.DEFAULT);
@@ -76,8 +91,22 @@ var PhysicsTest;
     }
     function update(_event) {
         ƒ.Physics.world.simulate(Math.min(0.1, ƒ.Loop.timeFrameReal / 1000)); // if physics is included and used
+        //let deltaTime: number = ƒ.Loop.timeFrameReal / 1000;
+        let turn = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT], [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]);
+        ctrTurn.setInput(turn);
+        cart.getComponent(ƒ.ComponentRigidbody).applyTorque(ƒ.Vector3.SCALE(ƒ.Vector3.Y(), ctrTurn.getOutput()));
+        let forward = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP], [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]);
+        ctrForward.setInput(forward);
+        cart.getComponent(ƒ.ComponentRigidbody).applyForce(ƒ.Vector3.SCALE(cart.mtxLocal.getZ(), ctrForward.getOutput()));
+        placeCameraOnCart();
         viewport.draw();
         ƒ.AudioManager.default.update();
+    }
+    function placeCameraOnCart() {
+        cameraNode.mtxLocal.mutate({
+            translation: cart.mtxWorld.translation,
+            rotation: new ƒ.Vector3(0, cart.mtxWorld.rotation.y, 0)
+        });
     }
 })(PhysicsTest || (PhysicsTest = {}));
 //# sourceMappingURL=Script.js.map

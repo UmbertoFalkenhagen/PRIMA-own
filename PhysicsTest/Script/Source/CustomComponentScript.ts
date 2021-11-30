@@ -26,6 +26,7 @@ namespace Script {
       switch (_event.type) {
         case ƒ.EVENT.COMPONENT_ADD:
           ƒ.Debug.log(this.message, this.node);
+          
           break;
         case ƒ.EVENT.COMPONENT_REMOVE:
           this.removeEventListener(ƒ.EVENT.COMPONENT_ADD, this.hndEvent);
