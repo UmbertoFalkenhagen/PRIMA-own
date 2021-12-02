@@ -41,9 +41,10 @@ var PhysicsTest;
     ctrForward.setDelay(200);
     let ctrTurn = new ƒ.Control("Turn", 10, 0 /* PROPORTIONAL */);
     ctrTurn.setDelay(50);
-    // let ground: ƒ.Node;
+    let ground;
     let cart;
     let cameraNode;
+    let cartWheels;
     // let cmpCart: ƒ.ComponentRigidbody;
     window.addEventListener("load", init);
     function init(_event) {
@@ -68,8 +69,10 @@ var PhysicsTest;
         ƒ.Physics.adjustTransforms(PhysicsTest.sceneGraph);
         ƒ.AudioManager.default.listenTo(PhysicsTest.sceneGraph);
         ƒ.AudioManager.default.listenWith(PhysicsTest.sceneGraph.getComponent(ƒ.ComponentAudioListener));
-        // ground = sceneGraph.getChildrenByName("Ground")[0];
+        ground = PhysicsTest.sceneGraph.getChildrenByName("Ground")[0];
         cart = PhysicsTest.sceneGraph.getChildrenByName("Cart")[0];
+        cartWheels = cart.getChildrenByName("Wheel");
+        console.log(cartWheels.length);
         let kartTransform = cart.getComponent(ƒ.ComponentTransform);
         // kartTransform.mtxLocal.translateX(35);
         // kartTransform.mtxLocal.translateY(5);
@@ -99,6 +102,9 @@ var PhysicsTest;
         ctrForward.setInput(forward);
         cart.getComponent(ƒ.ComponentRigidbody).applyForce(ƒ.Vector3.SCALE(cart.mtxLocal.getZ(), ctrForward.getOutput()));
         placeCameraOnCart();
+        cartWheels.forEach(wheel => {
+            calculateDistanceToGround(wheel);
+        });
         viewport.draw();
         ƒ.AudioManager.default.update();
     }
@@ -107,6 +113,31 @@ var PhysicsTest;
             translation: cart.mtxWorld.translation,
             rotation: new ƒ.Vector3(0, cart.mtxWorld.rotation.y, 0)
         });
+    }
+    function calculateDistanceToGround(_node) {
+        let posLocal = ƒ.Vector3.TRANSFORMATION(_node.mtxWorld.translation, ground.mtxWorldInverse, true);
+        console.log(posLocal.toString());
+        let gravityVector = ƒ.Vector3.ZERO();
+        if (posLocal.z < -1) {
+            gravityVector.y = -4;
+        }
+        else if (posLocal.z == -1) {
+            gravityVector.y = 0;
+        }
+        else {
+            gravityVector.y = 4;
+        }
+        cart.getComponent(ƒ.ComponentRigidbody).applyForceAtPoint(gravityVector, _node.mtxWorld.translation);
+        // let x: number = this.node.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.x / 2 + _node.radius / 2;
+        // let y: number = this.node.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.y + _node.radius / 2;
+        // if (posLocal.x <= (x) && posLocal.x >= -(x) && posLocal.y <= y && posLocal.y >= 0) {
+        //     //console.log("intersecting");
+        //     this.node.dispatchEvent(new CustomEvent("collisionEvent", { bubbles: true }));
+        //     return true;
+        //     //_agent.getComponent(agentComponentScript).respawn();
+        //   } else {
+        //     return false;
+        //   }
     }
 })(PhysicsTest || (PhysicsTest = {}));
 //# sourceMappingURL=Script.js.map

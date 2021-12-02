@@ -10,9 +10,11 @@ namespace PhysicsTest {
   let ctrTurn: ƒ.Control = new ƒ.Control("Turn", 10, ƒ.CONTROL_TYPE.PROPORTIONAL);
   ctrTurn.setDelay(50);
 
-  // let ground: ƒ.Node;
+  let ground: ƒ.Node;
   let cart: ƒ.Node;
   let cameraNode: ƒ.Node;
+
+  let cartWheels: ƒ.Node[];
   // let cmpCart: ƒ.ComponentRigidbody;
 
   window.addEventListener("load", init);
@@ -45,8 +47,10 @@ namespace PhysicsTest {
     ƒ.AudioManager.default.listenTo(sceneGraph);
     ƒ.AudioManager.default.listenWith(sceneGraph.getComponent(ƒ.ComponentAudioListener));
 
-    // ground = sceneGraph.getChildrenByName("Ground")[0];
+    ground = sceneGraph.getChildrenByName("Ground")[0];
     cart = sceneGraph.getChildrenByName("Cart")[0];
+    cartWheels = cart.getChildrenByName("Wheel");
+    console.log(cartWheels.length);
 
     let kartTransform: ƒ.ComponentTransform = cart.getComponent(ƒ.ComponentTransform);
     // kartTransform.mtxLocal.translateX(35);
@@ -67,6 +71,7 @@ namespace PhysicsTest {
     // cmpCart = new ƒ.ComponentRigidbody(80, ƒ.BODY_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.CAPSULE, ƒ.COLLISION_GROUP.DEFAULT);
     // cmpCart.restitution = 0;
     // cart.addComponent(cmpCart); 
+    
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
@@ -84,6 +89,9 @@ namespace PhysicsTest {
     cart.getComponent(ƒ.ComponentRigidbody).applyForce(ƒ.Vector3.SCALE(cart.mtxLocal.getZ(), ctrForward.getOutput()));
 
     placeCameraOnCart();
+    cartWheels.forEach(wheel => {
+      calculateDistanceToGround(wheel);
+    });
 
     viewport.draw();
     ƒ.AudioManager.default.update();
@@ -94,5 +102,32 @@ namespace PhysicsTest {
       translation: cart.mtxWorld.translation,
       rotation: new ƒ.Vector3(0, cart.mtxWorld.rotation.y, 0)
     });
+  }
+
+  function calculateDistanceToGround(_node: ƒ.Node): void {
+    let posLocal: ƒ.Vector3 = ƒ.Vector3.TRANSFORMATION(_node.mtxWorld.translation, ground.mtxWorldInverse, true);
+    console.log(posLocal.toString());
+    let gravityVector: ƒ.Vector3 = ƒ.Vector3.ZERO();
+    if (posLocal.z < -1) {
+      gravityVector.y = -4;
+    } else if (posLocal.z == -1) {
+      gravityVector.y = 0;
+    } else {
+      gravityVector.y = 4;
+    }
+
+    cart.getComponent(ƒ.ComponentRigidbody).applyForceAtPoint(gravityVector, _node.mtxWorld.translation);
+
+    // let x: number = this.node.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.x / 2 + _node.radius / 2;
+    // let y: number = this.node.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.y + _node.radius / 2;
+
+    // if (posLocal.x <= (x) && posLocal.x >= -(x) && posLocal.y <= y && posLocal.y >= 0) {
+    //     //console.log("intersecting");
+    //     this.node.dispatchEvent(new CustomEvent("collisionEvent", { bubbles: true }));
+    //     return true;
+    //     //_agent.getComponent(agentComponentScript).respawn();
+    //   } else {
+    //     return false;
+    //   }
   }
 }
