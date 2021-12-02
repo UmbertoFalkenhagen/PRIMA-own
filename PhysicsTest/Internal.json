@@ -195,8 +195,8 @@
                     "friction": 0.2,
                     "restitution": 0.2,
                     "mass": 1,
-                    "dampTranslation": 0.1,
-                    "dampRotation": 0.1,
+                    "dampTranslation": 2,
+                    "dampRotation": 10,
                     "effectGravity": 1,
                     "typeBody": "DYNAMIC",
                     "typeCollider": "CUBE",
@@ -924,6 +924,23 @@
         }
       ],
       "idResource": "Graph|2021-12-02T11:39:36.296Z|54566",
+      "type": "Graph"
+    }
+  },
+  "Graph|2021-12-02T13:06:35.283Z|47004": {
+    "ƒ.Graph": {
+      "name": "NewSceneGraph",
+      "components": {},
+      "children": [
+        {
+          "ƒ.Node": {
+            "name": "Child",
+            "components": {},
+            "children": []
+          }
+        }
+      ],
+      "idResource": "Graph|2021-12-02T13:06:35.283Z|47004",
       "type": "Graph"
     }
   }

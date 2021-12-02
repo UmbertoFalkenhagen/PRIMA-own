@@ -15,7 +15,7 @@ namespace PhysicsTest {
   let cameraNode: ƒ.Node;
 
   let cartWheels: ƒ.Node[];
-  // let cmpCart: ƒ.ComponentRigidbody;
+  //let cmpRigidbodyCart: ƒ.ComponentRigidbody;
 
   window.addEventListener("load", init);
 
@@ -71,7 +71,7 @@ namespace PhysicsTest {
     // cmpCart = new ƒ.ComponentRigidbody(80, ƒ.BODY_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.CAPSULE, ƒ.COLLISION_GROUP.DEFAULT);
     // cmpCart.restitution = 0;
     // cart.addComponent(cmpCart); 
-    
+    //cmpRigidbodyCart = cart.getComponent(ƒ.ComponentRigidbody);    
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
@@ -90,12 +90,20 @@ namespace PhysicsTest {
 
     placeCameraOnCart();
     cartWheels.forEach(wheel => {
-      calculateDistanceToGround(wheel);
+      calculateDistanceToGroundAndModifyGravity(wheel);
     });
 
     viewport.draw();
     ƒ.AudioManager.default.update();
   }
+
+  // function adjustCartRotation(): void {
+  //   if (cart.mtxWorld.rotation.z > 90) {
+  //     cart.mtxWorld.rotation.z -= 1;
+  //   } else if (cart.mtxWorld.rotation.z < -90) {
+  //     cart.mtxWorld.rotation.z += 1;
+  //   }
+  // }
 
   function placeCameraOnCart(): void {
     cameraNode.mtxLocal.mutate({
@@ -104,30 +112,20 @@ namespace PhysicsTest {
     });
   }
 
-  function calculateDistanceToGround(_node: ƒ.Node): void {
+  function calculateDistanceToGroundAndModifyGravity(_node: ƒ.Node): void {
     let posLocal: ƒ.Vector3 = ƒ.Vector3.TRANSFORMATION(_node.mtxWorld.translation, ground.mtxWorldInverse, true);
-    console.log(posLocal.toString());
+    //console.log(posLocal.toString());
     let gravityVector: ƒ.Vector3 = ƒ.Vector3.ZERO();
-    if (posLocal.z < -1) {
-      gravityVector.y = -4;
-    } else if (posLocal.z == -1) {
+    if (posLocal.z < -3) {
+      gravityVector.y = 0;
+    } else if (posLocal.z == -3) {
       gravityVector.y = 0;
     } else {
-      gravityVector.y = 4;
+      gravityVector.y = 3;
     }
 
     cart.getComponent(ƒ.ComponentRigidbody).applyForceAtPoint(gravityVector, _node.mtxWorld.translation);
 
-    // let x: number = this.node.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.x / 2 + _node.radius / 2;
-    // let y: number = this.node.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.y + _node.radius / 2;
-
-    // if (posLocal.x <= (x) && posLocal.x >= -(x) && posLocal.y <= y && posLocal.y >= 0) {
-    //     //console.log("intersecting");
-    //     this.node.dispatchEvent(new CustomEvent("collisionEvent", { bubbles: true }));
-    //     return true;
-    //     //_agent.getComponent(agentComponentScript).respawn();
-    //   } else {
-    //     return false;
-    //   }
+    
   }
 }
